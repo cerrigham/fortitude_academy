@@ -60,3 +60,7 @@ project_id INT,
 FOREIGN KEY(human_resource_id) REFERENCES human_resource(id),
 FOREIGN KEY(project_id) REFERENCES project(id)
 );
+
+ALTER TABLE fortitude.public.allocation RENAME COLUMN human_resource_id TO humanresource_id;
+ALTER TABLE fortitude.public.allocation DROP CONSTRAINT allocation_human_resource_id_fkey;
+ALTER TABLE fortitude.public.allocation ADD FOREIGN KEY (humanresource_id) REFERENCES human_resource(id);
