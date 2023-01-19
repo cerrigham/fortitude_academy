@@ -213,4 +213,18 @@ public class FortitudeAcademyTest {
         assertTrue(ProjectMethod.deleteFromProject(session, 1l));
         assertFalse(session.isOpen());
     }
+
+    @Test
+    public void deleteFromProjectNullIdNegativeTest() {
+        Session session = SessionUtility.createSession();
+        assertFalse(ProjectMethod.deleteFromProject(session, null));
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void deleteFromProjectIdEqualToZeroNegativeTest() {
+        Session session = SessionUtility.createSession();
+        assertFalse(ProjectMethod.deleteFromProject(session, null));
+        assertFalse(session.isOpen());
+    }
 }
