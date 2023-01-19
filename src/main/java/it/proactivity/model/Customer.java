@@ -34,6 +34,7 @@ public class Customer {
     private String detail;
 
     @OneToMany
+    @JoinColumn(name="customer_id")
     private List<Project> projects;
 
     @Override

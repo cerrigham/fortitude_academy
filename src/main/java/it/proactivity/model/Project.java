@@ -35,6 +35,7 @@ public class Project {
     private Customer customer;
 
     @OneToMany
+    @JoinColumn(name="project_id")
     private List<Allocation> allocations;
 
     @Override

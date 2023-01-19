@@ -43,6 +43,7 @@ public class HumanResource {
     private Boolean isCda;
 
     @OneToMany
+    @JoinColumn(name="human_resource_id")
     private List<Allocation> allocations;
 
     @Override
