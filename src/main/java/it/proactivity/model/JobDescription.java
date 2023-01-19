@@ -21,12 +21,10 @@ public class JobDescription {
     @Column(name = "id")
     private Long id;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "technology_id")
-    private List<Technology> technologyList;
+    @ManyToOne
+    private Technology technology;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "project_id")
+    @ManyToOne
     private Project project;
 
     @Override
