@@ -6,6 +6,7 @@ import it.proactivity.methods.TechnologyMethod;
 import it.proactivity.utility.SessionUtility;
 import org.hibernate.Session;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FortitudeAcademyTest {
@@ -14,8 +15,8 @@ public class FortitudeAcademyTest {
     public void insertOrUpdatePositiveUpdatingTest() {
         Session session = SessionUtility.createSession();
 
-        assertTrue(CustomerMethod.insertOrUpdateCustomer(session,1l,"Luigi","luigi@luigi.it",
-                "673637","second try"));
+        assertTrue(CustomerMethod.insertOrUpdateCustomer(session, 1l, "Luigi", "luigi@luigi.it",
+                "673637", "second try"));
         assertFalse(session.isOpen());
     }
 
@@ -23,8 +24,8 @@ public class FortitudeAcademyTest {
     public void insertOrUpdateInsertionPositiveTest() {
         Session session = SessionUtility.createSession();
 
-        assertTrue(CustomerMethod.insertOrUpdateCustomer(session,null,"Roberto","roberto@roberto.it",
-                "673637","Insert"));
+        assertTrue(CustomerMethod.insertOrUpdateCustomer(session, null, "Roberto", "roberto@roberto.it",
+                "673637", "Insert"));
         assertFalse(session.isOpen());
     }
 
@@ -32,8 +33,8 @@ public class FortitudeAcademyTest {
     public void insertOrUpdateEmptyNamePositiveUpdatingTest() {
         Session session = SessionUtility.createSession();
 
-        assertTrue(CustomerMethod.insertOrUpdateCustomer(session,2l,"","roberto@giorgio.it",
-                "673637","Insert"));
+        assertTrue(CustomerMethod.insertOrUpdateCustomer(session, 2l, "", "roberto@giorgio.it",
+                "673637", "Insert"));
         assertFalse(session.isOpen());
     }
 
@@ -41,8 +42,8 @@ public class FortitudeAcademyTest {
     public void insertOrUpdateNullNameNegativeTest() {
         Session session = SessionUtility.createSession();
 
-        assertFalse(CustomerMethod.insertOrUpdateCustomer(session,null,null,"roberto@roberto.it",
-                "673637","Insert"));
+        assertFalse(CustomerMethod.insertOrUpdateCustomer(session, null, null, "roberto@roberto.it",
+                "673637", "Insert"));
         assertFalse(session.isOpen());
     }
 
@@ -50,8 +51,8 @@ public class FortitudeAcademyTest {
     public void insertOrUpdateEmptyEmailPositiveUpdatingTest() {
         Session session = SessionUtility.createSession();
 
-        assertTrue(CustomerMethod.insertOrUpdateCustomer(session,2l,"roberto","",
-                "673637","Update"));
+        assertTrue(CustomerMethod.insertOrUpdateCustomer(session, 2l, "roberto", "",
+                "673637", "Update"));
         assertFalse(session.isOpen());
     }
 
@@ -59,8 +60,8 @@ public class FortitudeAcademyTest {
     public void insertOrUpdateNullEmailNegativeTest() {
         Session session = SessionUtility.createSession();
 
-        assertFalse(CustomerMethod.insertOrUpdateCustomer(session,null,"roberto",null,
-                "673637","Insert"));
+        assertFalse(CustomerMethod.insertOrUpdateCustomer(session, null, "roberto", null,
+                "673637", "Insert"));
         assertFalse(session.isOpen());
     }
 
@@ -68,8 +69,8 @@ public class FortitudeAcademyTest {
     public void insertOrUpdateEmptyPhoneNumberPositiveUpdatingTest() {
         Session session = SessionUtility.createSession();
 
-        assertTrue(CustomerMethod.insertOrUpdateCustomer(session,2l,"Giacomo","prova@prova.it",
-                "","Insert"));
+        assertTrue(CustomerMethod.insertOrUpdateCustomer(session, 2l, "Giacomo", "prova@prova.it",
+                "", "Insert"));
         assertFalse(session.isOpen());
     }
 
@@ -77,8 +78,8 @@ public class FortitudeAcademyTest {
     public void insertOrUpdateNullPhoneNumberNegativeTest() {
         Session session = SessionUtility.createSession();
 
-        assertFalse(CustomerMethod.insertOrUpdateCustomer(session,null,"roberto","prova@prova.it",
-                null,"Insert"));
+        assertFalse(CustomerMethod.insertOrUpdateCustomer(session, null, "roberto", "prova@prova.it",
+                null, "Insert"));
         assertFalse(session.isOpen());
     }
 
@@ -86,8 +87,8 @@ public class FortitudeAcademyTest {
     public void insertOrUpdateEmptydetailPositiveUpdatingTest() {
         Session session = SessionUtility.createSession();
 
-        assertTrue(CustomerMethod.insertOrUpdateCustomer(session,2l,"roberto","prova@prova.it",
-                "1111111111",""));
+        assertTrue(CustomerMethod.insertOrUpdateCustomer(session, 2l, "roberto", "prova@prova.it",
+                "1111111111", ""));
         assertFalse(session.isOpen());
     }
 
@@ -95,8 +96,8 @@ public class FortitudeAcademyTest {
     public void insertOrUpdateNullDetailNegativeTest() {
         Session session = SessionUtility.createSession();
 
-        assertFalse(CustomerMethod.insertOrUpdateCustomer(session,null,"roberto","prova@prova.it",
-                "83647848",null));
+        assertFalse(CustomerMethod.insertOrUpdateCustomer(session, null, "roberto", "prova@prova.it",
+                "83647848", null));
         assertFalse(session.isOpen());
     }
 
@@ -104,7 +105,7 @@ public class FortitudeAcademyTest {
     public void deleteFromCustomerPositiveTest() {
         Session session = SessionUtility.createSession();
 
-        assertTrue(CustomerMethod.deleteFromCustomer(session,2l));
+        assertTrue(CustomerMethod.deleteFromCustomer(session, 2l));
         assertFalse(session.isOpen());
     }
 
@@ -112,7 +113,7 @@ public class FortitudeAcademyTest {
     public void deleteFromCustomerNullIdNegativeTest() {
         Session session = SessionUtility.createSession();
 
-        assertFalse(CustomerMethod.deleteFromCustomer(session,null));
+        assertFalse(CustomerMethod.deleteFromCustomer(session, null));
         assertFalse(session.isOpen());
     }
 
@@ -120,97 +121,96 @@ public class FortitudeAcademyTest {
     public void deleteFromCustomerIdEqualToZeroNegativeTest() {
         Session session = SessionUtility.createSession();
 
-        assertFalse(CustomerMethod.deleteFromCustomer(session,0l));
+        assertFalse(CustomerMethod.deleteFromCustomer(session, 0l));
         assertFalse(session.isOpen());
     }
 
     @Test
     public void insertOrUpdateTechnologyInsertionPositiveTest() {
         Session session = SessionUtility.createSession();
-        assertTrue(TechnologyMethod.insertOrUpdateTechnology(session,null,"Java"));
+        assertTrue(TechnologyMethod.insertOrUpdateTechnology(session, null, "Java"));
         assertFalse(session.isOpen());
     }
 
     @Test
     public void insertOrUpdateTechnologyUpdatingPositiveTest() {
         Session session = SessionUtility.createSession();
-        assertTrue(TechnologyMethod.insertOrUpdateTechnology(session,1l,"Spring"));
+        assertTrue(TechnologyMethod.insertOrUpdateTechnology(session, 1l, "Spring"));
         assertFalse(session.isOpen());
     }
 
     @Test
     public void insertOrUpdateTechnologyNullNameNegativeTest() {
         Session session = SessionUtility.createSession();
-        assertFalse(TechnologyMethod.insertOrUpdateTechnology(session,null,null));
+        assertFalse(TechnologyMethod.insertOrUpdateTechnology(session, null, null));
         assertFalse(session.isOpen());
     }
 
     @Test
     public void deleteTechnologyPositiveTest() {
         Session session = SessionUtility.createSession();
-        assertTrue(TechnologyMethod.deleteFromTechnology(session,1l));
+        assertTrue(TechnologyMethod.deleteFromTechnology(session, 1l));
         assertFalse(session.isOpen());
     }
 
     @Test
     public void deleteTechnologyNegativeTest() {
         Session session = SessionUtility.createSession();
-        assertFalse(TechnologyMethod.deleteFromTechnology(session,null));
+        assertFalse(TechnologyMethod.deleteFromTechnology(session, null));
         assertFalse(session.isOpen());
     }
 
     @Test
     public void insertOrUpdateProjectPositiveInsertionTest() {
         Session session = SessionUtility.createSession();
-        assertTrue(ProjectMethod.insertOrUpdateProject(session,null,"First_Java_project","2023-01-19",
-                "1112203938",3l));
+        assertTrue(ProjectMethod.insertOrUpdateProject(session, null, "First_Java_project", "2023-01-19",
+                "1112203938", 3l));
         assertFalse(session.isOpen());
     }
 
     @Test
     public void insertOrUpdateProjectPositiveUpdatingTest() {
         Session session = SessionUtility.createSession();
-        assertTrue(ProjectMethod.insertOrUpdateProject(session,1l,"Java","",
-                "11",4l));
+        assertTrue(ProjectMethod.insertOrUpdateProject(session, 1l, "Java", "",
+                "11", 4l));
         assertFalse(session.isOpen());
     }
 
     @Test
     public void insertOrUpdateProjectNullNameNegativeTest() {
         Session session = SessionUtility.createSession();
-        assertFalse(ProjectMethod.insertOrUpdateProject(session,1l,null,"",
-                "11",4l));
+        assertFalse(ProjectMethod.insertOrUpdateProject(session, 1l, null, "",
+                "11", 4l));
         assertFalse(session.isOpen());
     }
 
     @Test
     public void insertOrUpdateProjectNullEndDateNegativeTest() {
         Session session = SessionUtility.createSession();
-        assertFalse(ProjectMethod.insertOrUpdateProject(session,1l,"Java",null,
-                "11",4l));
+        assertFalse(ProjectMethod.insertOrUpdateProject(session, 1l, "Java", null,
+                "11", 4l));
         assertFalse(session.isOpen());
     }
 
     @Test
     public void insertOrUpdateProjectNullReportingIdNegativeTest() {
         Session session = SessionUtility.createSession();
-        assertFalse(ProjectMethod.insertOrUpdateProject(session,1l,"Java","",
-                null,4l));
+        assertFalse(ProjectMethod.insertOrUpdateProject(session, 1l, "Java", "", null, 4l));
         assertFalse(session.isOpen());
     }
 
     @Test
     public void insertOrUpdateProjectCustomerNameNegativeTest() {
         Session session = SessionUtility.createSession();
-        assertFalse(ProjectMethod.insertOrUpdateProject(session,1l,"java","",
-                "11",null));
+        assertFalse(ProjectMethod.insertOrUpdateProject(session, 1l, "java", "",
+                "11", null));
         assertFalse(session.isOpen());
     }
 
     @Test
     public void deleteFromProjectPositiveTest() {
         Session session = SessionUtility.createSession();
-        assertTrue(ProjectMethod.deleteFromProject(session,1l));
+        assertTrue(ProjectMethod.deleteFromProject(session, 1l));
         assertFalse(session.isOpen());
     }
 }
