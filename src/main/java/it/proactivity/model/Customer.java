@@ -9,12 +9,12 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "human_resource")
+@Table(name = "customer")
 @AllArgsConstructor
 @Getter
 @NoArgsConstructor
 @Setter
-public class HumanResource {
+public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,30 +24,20 @@ public class HumanResource {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "surname")
-    private String surname;
-
     @Column(name = "email")
     private String email;
 
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @Column(name = "vat_code")
-    private String vatCode;
-
-    @Column(name = "flag_ceo")
-    private Boolean isCeo;
-
-    @Column(name = "flag_cda")
-    private Boolean isCda;
+    @Column(name = "detail")
+    private String detail;
 
     @OneToMany
-    private List<Allocation> allocations;
+    private List<Project> projects;
 
     @Override
     public String toString() {
-        return "Name : " + getName() + ", Surname : " + getSurname() + ", Email : " + getEmail() + "\n " +
-                "IsCeo : " + getIsCeo() + ", IsCda : " + getIsCda();
+        return "name : " + getName() + ", Email : " + getEmail();
     }
 }
