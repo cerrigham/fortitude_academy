@@ -33,7 +33,7 @@ public class Customer {
     @Column(name = "detail")
     private String detail;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name="customer_id")
     private List<Project> projects;
 

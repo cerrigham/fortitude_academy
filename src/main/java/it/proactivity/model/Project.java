@@ -34,9 +34,13 @@ public class Project {
     @ManyToOne
     private Customer customer;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name="project_id")
     private List<Allocation> allocations;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "project_id")
+    private List<JobDescription> jobDescriptions;
 
     @Override
     public String toString() {

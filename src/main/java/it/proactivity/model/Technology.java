@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "technology")
@@ -22,6 +23,10 @@ public class Technology {
 
     @Column(name = "name")
     private String name;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "technology_id")
+    private List<JobDescription> jobDescriptionList;
 
     @Override
     public String toString() {
