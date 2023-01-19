@@ -25,7 +25,8 @@ public class JobDescription {
     @JoinColumn(name = "technology_id")
     private List<Technology> technologyList;
 
-    @ManyToMany
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "project_id")
     private Project project;
 
     @Override

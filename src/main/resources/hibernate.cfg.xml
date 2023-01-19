@@ -26,6 +26,10 @@
 
         <!-- Annotated entity classes -->
         <mapping class="it.proactivity.model.HumanResource"/>
+        <mapping class="it.proactivity.model.Company"/>
+        <mapping class="it.proactivity.model.CompanyLocation"/>
+        <mapping class="it.proactivity.model.JobDescription"/>
+        <mapping class="it.proactivity.model.Technology"/>
 
     </session-factory>
 </hibernate-configuration>
