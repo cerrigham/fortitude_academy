@@ -13,7 +13,7 @@
         -->
         <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/fortitude</property>
         <property name="hibernate.connection.username">postgres</property>
-        <property name="hibernate.connection.password">Croupier1</property>
+        <property name="hibernate.connection.password"></property>
 
         <!-- SQL dialect -->
         <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
@@ -29,6 +29,10 @@
         <mapping class="it.proactivity.model.Customer"/>
         <mapping class="it.proactivity.model.Allocation"/>
         <mapping class="it.proactivity.model.Project"/>
+        <mapping class="it.proactivity.model.Company"/>
+        <mapping class="it.proactivity.model.CompanyLocation"/>
+        <mapping class="it.proactivity.model.JobDescription"/>
+        <mapping class="it.proactivity.model.Technology"/>
 
     </session-factory>
 </hibernate-configuration>
