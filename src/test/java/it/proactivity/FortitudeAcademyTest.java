@@ -1,6 +1,7 @@
 package it.proactivity;
 
 import it.proactivity.methods.CustomerMethod;
+import it.proactivity.methods.JobDescriptionMethod;
 import it.proactivity.methods.ProjectMethod;
 import it.proactivity.methods.TechnologyMethod;
 import it.proactivity.utility.SessionUtility;
@@ -163,7 +164,7 @@ public class FortitudeAcademyTest {
     @Test
     public void insertOrUpdateProjectPositiveInsertionTest() {
         Session session = SessionUtility.createSession();
-        assertTrue(ProjectMethod.insertOrUpdateProject(session, null, "First_Java_project", "2023-01-19",
+        assertTrue(ProjectMethod.insertOrUpdateProject(session, null, "Php project", "2023-01-19",
                 "1112203938", 3l));
         assertFalse(session.isOpen());
     }
@@ -227,4 +228,53 @@ public class FortitudeAcademyTest {
         assertFalse(ProjectMethod.deleteFromProject(session, null));
         assertFalse(session.isOpen());
     }
+
+    @Test
+    public void insertOrUpdateJobDescriptionInsertPositiveInsertionTest() {
+        Session session = SessionUtility.createSession();
+
+        assertTrue(JobDescriptionMethod.insertOrUpdateJobDescription(session, null, 2l, 2l));
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void insertOrUpdateJobDescriptionInsertPositiveUpdatingTest() {
+        Session session = SessionUtility.createSession();
+
+        assertTrue(JobDescriptionMethod.insertOrUpdateJobDescription(session, 2l, 2l, 3l));
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void insertOrUpdateJobDescriptionInsertNullTechnologyNegativeTest() {
+        Session session = SessionUtility.createSession();
+
+        assertFalse(JobDescriptionMethod.insertOrUpdateJobDescription(session, null, null, 3l));
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void insertOrUpdateJobDescriptionInsertNullProjectNegativeTest() {
+        Session session = SessionUtility.createSession();
+
+        assertFalse(JobDescriptionMethod.insertOrUpdateJobDescription(session, null, 2l, null));
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void deleteFromJobDescriptionPositiveTest() {
+        Session session = SessionUtility.createSession();
+
+        assertTrue(JobDescriptionMethod.deleteFromJobDescription(session, 2l));
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void deleteFromJobDescriptionNegativeTest() {
+        Session session = SessionUtility.createSession();
+
+        assertFalse(JobDescriptionMethod.deleteFromJobDescription(session, 12l));
+        assertFalse(session.isOpen());
+    }
+
 }
