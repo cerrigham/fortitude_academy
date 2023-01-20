@@ -16,7 +16,7 @@ public class FortitudeAcademyTest {
     public void insertOrUpdatePositiveUpdatingTest() {
         Session session = SessionUtility.createSession();
 
-        assertTrue(CustomerMethod.insertOrUpdateCustomer(session, 1l, "Luigi", "luigi@luigi.it",
+        assertTrue(CustomerMethod.createOrUpdateCustomer(session, 1l, "Luigi", "luigi@luigi.it",
                 "673637", "second try"));
         assertFalse(session.isOpen());
     }
@@ -25,7 +25,7 @@ public class FortitudeAcademyTest {
     public void insertOrUpdateInsertionPositiveTest() {
         Session session = SessionUtility.createSession();
 
-        assertTrue(CustomerMethod.insertOrUpdateCustomer(session, null, "Roberto", "roberto@roberto.it",
+        assertTrue(CustomerMethod.createOrUpdateCustomer(session, null, "Roberto", "roberto@roberto.it",
                 "673637", "Insert"));
         assertFalse(session.isOpen());
     }
@@ -34,7 +34,7 @@ public class FortitudeAcademyTest {
     public void insertOrUpdateEmptyNamePositiveUpdatingTest() {
         Session session = SessionUtility.createSession();
 
-        assertTrue(CustomerMethod.insertOrUpdateCustomer(session, 2l, "", "roberto@giorgio.it",
+        assertTrue(CustomerMethod.createOrUpdateCustomer(session, 2l, "", "roberto@giorgio.it",
                 "673637", "Insert"));
         assertFalse(session.isOpen());
     }
@@ -43,7 +43,7 @@ public class FortitudeAcademyTest {
     public void insertOrUpdateNullNameNegativeTest() {
         Session session = SessionUtility.createSession();
 
-        assertFalse(CustomerMethod.insertOrUpdateCustomer(session, null, null, "roberto@roberto.it",
+        assertFalse(CustomerMethod.createOrUpdateCustomer(session, null, null, "roberto@roberto.it",
                 "673637", "Insert"));
         assertFalse(session.isOpen());
     }
@@ -52,7 +52,7 @@ public class FortitudeAcademyTest {
     public void insertOrUpdateEmptyEmailPositiveUpdatingTest() {
         Session session = SessionUtility.createSession();
 
-        assertTrue(CustomerMethod.insertOrUpdateCustomer(session, 2l, "roberto", "",
+        assertTrue(CustomerMethod.createOrUpdateCustomer(session, 2l, "roberto", "",
                 "673637", "Update"));
         assertFalse(session.isOpen());
     }
@@ -61,7 +61,7 @@ public class FortitudeAcademyTest {
     public void insertOrUpdateNullEmailNegativeTest() {
         Session session = SessionUtility.createSession();
 
-        assertFalse(CustomerMethod.insertOrUpdateCustomer(session, null, "roberto", null,
+        assertFalse(CustomerMethod.createOrUpdateCustomer(session, null, "roberto", null,
                 "673637", "Insert"));
         assertFalse(session.isOpen());
     }
@@ -70,7 +70,7 @@ public class FortitudeAcademyTest {
     public void insertOrUpdateEmptyPhoneNumberPositiveUpdatingTest() {
         Session session = SessionUtility.createSession();
 
-        assertTrue(CustomerMethod.insertOrUpdateCustomer(session, 2l, "Giacomo", "prova@prova.it",
+        assertTrue(CustomerMethod.createOrUpdateCustomer(session, 2l, "Giacomo", "prova@prova.it",
                 "", "Insert"));
         assertFalse(session.isOpen());
     }
@@ -79,7 +79,7 @@ public class FortitudeAcademyTest {
     public void insertOrUpdateNullPhoneNumberNegativeTest() {
         Session session = SessionUtility.createSession();
 
-        assertFalse(CustomerMethod.insertOrUpdateCustomer(session, null, "roberto", "prova@prova.it",
+        assertFalse(CustomerMethod.createOrUpdateCustomer(session, null, "roberto", "prova@prova.it",
                 null, "Insert"));
         assertFalse(session.isOpen());
     }
@@ -88,7 +88,7 @@ public class FortitudeAcademyTest {
     public void insertOrUpdateEmptydetailPositiveUpdatingTest() {
         Session session = SessionUtility.createSession();
 
-        assertTrue(CustomerMethod.insertOrUpdateCustomer(session, 2l, "roberto", "prova@prova.it",
+        assertTrue(CustomerMethod.createOrUpdateCustomer(session, 2l, "roberto", "prova@prova.it",
                 "1111111111", ""));
         assertFalse(session.isOpen());
     }
@@ -97,7 +97,7 @@ public class FortitudeAcademyTest {
     public void insertOrUpdateNullDetailNegativeTest() {
         Session session = SessionUtility.createSession();
 
-        assertFalse(CustomerMethod.insertOrUpdateCustomer(session, null, "roberto", "prova@prova.it",
+        assertFalse(CustomerMethod.createOrUpdateCustomer(session, null, "roberto", "prova@prova.it",
                 "83647848", null));
         assertFalse(session.isOpen());
     }

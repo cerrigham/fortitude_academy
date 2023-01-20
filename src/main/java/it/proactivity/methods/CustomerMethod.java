@@ -2,6 +2,7 @@ package it.proactivity.methods;
 
 import it.proactivity.model.Customer;
 import it.proactivity.utility.SessionUtility;
+import it.proactivity.utility.Utility;
 import org.hibernate.Session;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -11,27 +12,32 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 public class CustomerMethod {
-    public static Boolean insertOrUpdateCustomer(Session session, Long id, String name, String email, String phoneNumber,
-                                                 String detail) {
-        if (checkInputParameter(session, name, email, phoneNumber, detail)) {
-            SessionUtility.endSession(session);
+
+    public static Boolean createOrUpdateCustomer(Session session, Long id, String name, String email, String phoneNumber,
+                                                 String detail) throws NoSuchElementException {
+        if(session == null)
             return false;
-        }
 
         if (id == null) {
+            // create Customer
+            Utility utility = new Utility();
+
+            if(utility.isNullOrEmpty(name) || utility.isNullOrEmpty(email) || utility.isNullOrEmpty(phoneNumber)) {
+                return false;
+            }
+
             Customer customer = createCustomer(name, email, phoneNumber, detail);
             session.persist(customer);
             SessionUtility.endSession(session);
 
             return true;
         } else {
-
-            List<Customer> customers = checkCustomer(session, id);
-            if (customers.size() == 0) {
+            // update Customer
+            Customer customer = getCustomerById(session, id);
+            if (customer == null) {
                 SessionUtility.endSession(session);
                 return false;
             } else {
-                Customer customer = customers.get(0);
                 checkParameterForUpdate(customer, name, email, phoneNumber, detail);
                 SessionUtility.endSession(session);
                 return true;
@@ -39,35 +45,37 @@ public class CustomerMethod {
         }
     }
 
-    public static Boolean deleteFromCustomer(Session session, Long id) {
-        if ((checkInputParameter(session, id))) {
-            SessionUtility.endSession(session);
+    public static Boolean deleteFromCustomer(Session session, Long id) throws NoSuchElementException {
+        if(session == null || id == null) {
             return false;
         }
+        Customer customer = getCustomerById(session, id);
 
-        List<Customer> customers = checkCustomer(session, id);
-
-        if (customers.isEmpty()) {
+        if (customer == null) {
             SessionUtility.endSession(session);
             return false;
         } else {
-            session.delete(customers.get(0));
+            session.delete(customer);
             SessionUtility.endSession(session);
             return true;
         }
     }
 
     private static Customer createCustomer(String name, String email, String phoneNumber, String detail) {
-
         Customer customer = new Customer();
         customer.setName(name);
         customer.setEmail(email);
         customer.setPhoneNumber(phoneNumber);
-        customer.setDetail(detail);
+
+        Utility utility = new Utility();
+        if(!utility.isNullOrEmpty(detail)) {
+            customer.setDetail(detail);
+        }
+
         return customer;
     }
 
-    private static List<Customer> checkCustomer(Session session, Long id) {
+    private static Customer getCustomerById(Session session, Long id) {
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<Customer> cq = cb.createQuery(Customer.class);
         Root<Customer> root = cq.from(Customer.class);
@@ -76,35 +84,30 @@ public class CustomerMethod {
 
         Query query = session.createQuery(cq);
         List<Customer> customerList = query.getResultList();
-        if (customerList.size() > 1) {
+
+        if(customerList == null) {
+            return null;
+        } else if(customerList.isEmpty()) {
+            return null;
+        } else if(customerList.size() > 1) {
             throw new NoSuchElementException("The result query get more than one result");
-        }
-
-        return customerList;
-    }
-
-    private static Boolean checkInputParameter(Session session, String name, String email, String phoneNumber, String detail) {
-
-        return session == null || name == null || email == null || phoneNumber == null || detail == null;
-    }
-
-    private static Boolean checkInputParameter(Session session, Long id) {
-        return session == null || id == null || id.equals(0L);
+        } else
+            return  customerList.get(0);
     }
 
     private static void checkParameterForUpdate(Customer customer, String name, String email, String phoneNumber,
                                                 String detail) {
-
-        if (!(name.isEmpty())) {
+        Utility utility = new Utility();
+        if (!utility.isNullOrEmpty(name)) {
             customer.setName(name);
         }
-        if (!(email.isEmpty())) {
+        if (!utility.isNullOrEmpty(email)) {
             customer.setEmail(email);
         }
-        if (!(phoneNumber.isEmpty())) {
+        if (!utility.isNullOrEmpty(phoneNumber)) {
             customer.setPhoneNumber(phoneNumber);
         }
-        if (!(phoneNumber.isEmpty())) {
+        if (detail != null) {
             customer.setDetail(detail);
         }
     }
