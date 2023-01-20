@@ -8,73 +8,19 @@ import org.hibernate.query.Query;
 import javax.persistence.criteria.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static it.proactivity.utility.SessionUtility.checkSession;
 import static it.proactivity.utility.SessionUtility.endSession;
+import static it.proactivity.utility.Utility.checkIfNullOrEmpty;
 
 public class HumanResourceUtility {
-    public static HumanResource createAHumanResource(String name, String surname,
-                                                     String email, String phoneNumber, String vatCode, Boolean isCeo,
-                                                     Boolean isCda) {
-        if (name == null || surname == null || email == null || phoneNumber == null || vatCode == null || isCeo == null
-                || isCda == null) {
-            return null;
-        }
-        HumanResource humanResource = new HumanResource();
-        humanResource.setName(name);
-        humanResource.setSurname(surname);
-        humanResource.setEmail(email);
-        humanResource.setPhoneNumber(phoneNumber);
-        humanResource.setVatCode(vatCode);
-        humanResource.setIsCeo(isCeo);
-        humanResource.setIsCda(isCda);
-        return humanResource;
-    }
-    private static List<HumanResource> checkAHumanResource(Session session, Long id) {
-        CriteriaBuilder cb = session.getCriteriaBuilder();
-        CriteriaQuery<HumanResource> cr = cb.createQuery(HumanResource.class);
-        Root<HumanResource> root = cr.from(HumanResource.class);
-        cr.select(root).where(cb.equal(root.get("id"), id));
-
-        Query<HumanResource> query = session.createQuery(cr);
-        List<HumanResource> humanResourceList = query.getResultList();
-        if (humanResourceList.size() > 1) {
-            return null;
-        }
-        return humanResourceList;
-    }
-
-    private static void checkForUpdate(HumanResource humanResource, String name, String surname,
-                                       String email, String phoneNumber, String vatCode, Boolean isCeo,
-                                       Boolean isCda) {
-        if (name == null) {
-            humanResource.setName(name);
-        }
-        if (surname == null) {
-            humanResource.setSurname(surname);
-        }
-        if (email == null) {
-            humanResource.setEmail(email);
-        }
-        if (phoneNumber == null) {
-            humanResource.setPhoneNumber(phoneNumber);
-        }
-        if (vatCode == null) {
-            humanResource.setVatCode(vatCode);
-        }
-        if (isCeo == null) {
-            humanResource.setIsCeo(isCeo);
-        }
-        if (isCda == null) {
-            humanResource.setIsCda(isCda);
-        }
-    }
 
     public static Boolean insertOrUpdateHumanResource(Session session, String name, Long id, String surname,
                                                       String email, String phoneNumber, String vatCode, Boolean isCeo,
                                                       Boolean isCda) {
-        if (session == null || name == null || surname == null || email == null || phoneNumber == null ||
-                vatCode == null || isCeo == null || isCda == null) {
+        if (checkIfNullOrEmpty(name) || checkIfNullOrEmpty(surname)
+                || checkIfNullOrEmpty(email) || checkIfNullOrEmpty(phoneNumber) ||checkIfNullOrEmpty(vatCode)) {
             return false;
         }
         checkSession(session);
@@ -84,17 +30,19 @@ public class HumanResourceUtility {
             session.persist(humanResource);
             endSession(session);
             return true;
-        }
-        List<HumanResource> humanResourceList = checkAHumanResource(session, id);
-        if (humanResourceList.size() == 0) {
-            endSession(session);
         } else {
-            HumanResource humanResource = humanResourceList.get(0);
-            checkForUpdate(humanResource, name, surname, email, phoneNumber, vatCode, isCeo, isCda);
-            endSession(session);
-            return true;
+            HumanResource humanResource = getAHumanResource(session, id);
+            if (humanResource == null) {
+                endSession(session);
+                return null;
+            } else {
+                checkForUpdate(humanResource, name, surname,
+                        email, phoneNumber, vatCode, isCeo, isCda);
+                session.persist(session);
+                endSession(session);
+                return true;
+            }
         }
-        return false;
     }
 
     public static Boolean deleteAHumanResource(Session session, Long id) {
@@ -115,6 +63,64 @@ public class HumanResourceUtility {
         session.delete(humanResourceList.get(0));
         endSession(session);
         return true;
+    }
+
+    public static HumanResource createAHumanResource(String name, String surname,
+                                                     String email, String phoneNumber, String vatCode, Boolean isCeo,
+                                                     Boolean isCda) {
+        HumanResource humanResource = new HumanResource();
+        humanResource.setName(name);
+        humanResource.setSurname(surname);
+        humanResource.setEmail(email);
+        humanResource.setPhoneNumber(phoneNumber);
+        humanResource.setVatCode(vatCode);
+        humanResource.setIsCeo(isCeo);
+        humanResource.setIsCda(isCda);
+        return humanResource;
+    }
+
+    private static HumanResource getAHumanResource(Session session, Long id) {
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<HumanResource> cr = cb.createQuery(HumanResource.class);
+        Root<HumanResource> root = cr.from(HumanResource.class);
+        cr.select(root).where(cb.equal(root.get("id"), id));
+
+        Query<HumanResource> query = session.createQuery(cr);
+        List<HumanResource> humanResourceList = query.getResultList();
+        if (humanResourceList == null) {
+            return null;
+        } else if (humanResourceList.isEmpty()) {
+            return null;
+        } else if (humanResourceList.size() > 1) {
+            throw new NoSuchElementException("There are more than one result");
+        } else
+            return humanResourceList.get(0);
+    }
+
+    private static void checkForUpdate(HumanResource humanResource, String name, String surname,
+                                       String email, String phoneNumber, String vatCode, Boolean isCeo,
+                                       Boolean isCda) {
+        if (checkIfNullOrEmpty(name)) {
+            humanResource.setName(name);
+        }
+        if (checkIfNullOrEmpty(surname)) {
+            humanResource.setSurname(surname);
+        }
+        if (checkIfNullOrEmpty(email)) {
+            humanResource.setEmail(email);
+        }
+        if (checkIfNullOrEmpty(phoneNumber)) {
+            humanResource.setPhoneNumber(phoneNumber);
+        }
+        if (checkIfNullOrEmpty(vatCode)) {
+            humanResource.setVatCode(vatCode);
+        }
+        if (isCeo == null) {
+            humanResource.setIsCeo(isCeo);
+        }
+        if (isCda == null) {
+            humanResource.setIsCda(isCda);
+        }
     }
 
 }

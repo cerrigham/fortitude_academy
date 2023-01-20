@@ -3,19 +3,20 @@ package it.proactivity.utility;
 import it.proactivity.model.Company;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
-
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static it.proactivity.utility.SessionUtility.checkSession;
 import static it.proactivity.utility.SessionUtility.endSession;
+import static it.proactivity.utility.Utility.checkIfNullOrEmpty;
 
 public class CompanyUtility {
 
     public static Boolean insertOrUpdateCompany(Session session, Long id, String name) {
-        if (session == null || name == null) { //TODO check isEmpty
+        if (session == null || checkIfNullOrEmpty(name)) {
             return false;
         }
         checkSession(session);
@@ -62,7 +63,6 @@ public class CompanyUtility {
     private static Company createACompany(String name) {
         Company company = new Company();
         company.setName(name);
-
         return company;
     }
 
@@ -80,13 +80,13 @@ public class CompanyUtility {
         } else if (companyList.isEmpty()) {
             return null;
         } else if (companyList.size() > 1) {
-            return null; //TODO call execption
+            throw new NoSuchElementException("There are more than one result");
         } else
             return companyList.get(0);
     }
 
     private static void checkForUpdate(Company company, String name) {
-        if (name != null || !name.isEmpty()) {
+        if (checkIfNullOrEmpty(name)) {
             company.setName(name);
         }
     }

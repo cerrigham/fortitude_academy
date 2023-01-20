@@ -9,46 +9,16 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
+import java.util.NoSuchElementException;
+
 import static it.proactivity.utility.SessionUtility.checkSession;
 import static it.proactivity.utility.SessionUtility.endSession;
+import static it.proactivity.utility.Utility.checkIfNullOrEmpty;
 
 public class CompanyLocationUtility {
 
-    public static CompanyLocation createACompanyLocation(String city, String address) {
-        if (city == null || address == null) {
-            return null;
-        }
-        CompanyLocation companyLocation = new CompanyLocation();
-        companyLocation.setCity(city);
-        companyLocation.setAddress(address);
-        return companyLocation;
-    }
-
-    private static List<CompanyLocation> checkACompanyLocation(Session session, Long id) {
-        CriteriaBuilder cb = session.getCriteriaBuilder();
-        CriteriaQuery<CompanyLocation> cr = cb.createQuery(CompanyLocation.class);
-        Root<CompanyLocation> root = cr.from(CompanyLocation.class);
-        cr.select(root).where(cb.equal(root.get("id"), id));
-
-        Query<CompanyLocation> query = session.createQuery(cr);
-        List<CompanyLocation> companyLocationList = query.getResultList();
-        if (companyLocationList.size() > 1) {
-            return null;
-        }
-        return companyLocationList;
-    }
-
-    private static void checkForUpdate(CompanyLocation companyLocation, String city, String address) {
-        if (city == null) {
-            companyLocation.setCity(city);
-        }
-        if (address == null) {
-            companyLocation.setAddress(address);
-        }
-    }
-
     public static Boolean insertOrUpdateCompanyLocation(Session session, String city, String address, Long id) {
-        if (session == null || city == null || address == null) {
+        if (session == null || checkIfNullOrEmpty(city) || checkIfNullOrEmpty(address)) {
             return false;
         }
         checkSession(session);
@@ -58,17 +28,18 @@ public class CompanyLocationUtility {
             session.persist(companyLocation);
             endSession(session);
             return true;
-        }
-        List<CompanyLocation> companyLocationList = checkACompanyLocation(session, id);
-        if (companyLocationList.size() == 0) {
-            endSession(session);
         } else {
-            CompanyLocation companyLocation = companyLocationList.get(0);
-            checkForUpdate(companyLocation, city, address);
-            endSession(session);
-            return true;
+            CompanyLocation companyLocation = getACompanyLocation(session, id);
+            if (companyLocation == null) {
+                endSession(session);
+                return null;
+            } else {
+                checkForUpdate(companyLocation, city, address);
+                session.persist(session);
+                endSession(session);
+                return true;
+            }
         }
-        return false;
     }
 
     public static Boolean deleteACompanyLocation(Session session, Long id) {
@@ -88,5 +59,38 @@ public class CompanyLocationUtility {
         session.delete(companyLocationList.get(0));
         endSession(session);
         return true;
+    }
+    private static CompanyLocation createACompanyLocation(String city, String address) {
+        CompanyLocation companyLocation = new CompanyLocation();
+        companyLocation.setCity(city);
+        companyLocation.setAddress(address);
+        return companyLocation;
+    }
+
+    private static CompanyLocation getACompanyLocation(Session session, Long id) {
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<CompanyLocation> cr = cb.createQuery(CompanyLocation.class);
+        Root<CompanyLocation> root = cr.from(CompanyLocation.class);
+        cr.select(root).where(cb.equal(root.get("id"), id));
+
+        Query<CompanyLocation> query = session.createQuery(cr);
+        List<CompanyLocation> companyLocationList = query.getResultList();
+        if (companyLocationList == null) {
+            return null;
+        } else if (companyLocationList.isEmpty()) {
+            return null;
+        } else if (companyLocationList.size() > 1) {
+            throw new NoSuchElementException("There are more than one result");
+        } else
+            return companyLocationList.get(0);
+    }
+
+    private static void checkForUpdate(CompanyLocation companyLocation, String city, String address) {
+        if (checkIfNullOrEmpty(city)) {
+            companyLocation.setCity(city);
+        }
+        if (checkIfNullOrEmpty(address)) {
+            companyLocation.setAddress(address);
+        }
     }
 }
