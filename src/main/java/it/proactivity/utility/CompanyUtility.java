@@ -16,12 +16,15 @@ import static it.proactivity.utility.Utility.checkIfNullOrEmpty;
 public class CompanyUtility {
 
     public static Boolean insertOrUpdateCompany(Session session, Long id, String name) {
-        if (session == null || checkIfNullOrEmpty(name)) {
+        if (session == null) {
             return false;
         }
-        checkSession(session);
 
         if (id == null) {
+            if (checkIfNullOrEmpty(name)){
+                endSession(session);
+                return false;
+            }
             Company company = createACompany(name);
             session.persist(company);
             endSession(session);
@@ -30,7 +33,7 @@ public class CompanyUtility {
             Company company = getCompanyById(session, id);
             if (company == null) {
                 endSession(session);
-                return null;
+                return false;
             } else {
                 checkForUpdate(company, name);
                 session.persist(session);
@@ -41,7 +44,11 @@ public class CompanyUtility {
     }
 
     public static Boolean deleteACompany(Session session, Long id) {
-        if (session == null || id == null) {
+        if (session == null) {
+            return false;
+        }
+        if (id == null) {
+            endSession(session);
             return false;
         }
 
@@ -51,7 +58,7 @@ public class CompanyUtility {
                 "WHERE c.id = :id";
         Query<Company> companyQuery = session.createQuery(query).setParameter("id", id);
         List<Company> companyList = companyQuery.getResultList();
-        if (companyList == null || companyList.size() > 1) {
+        if (companyList.size() > 1 || companyList == null) {
             endSession(session);
             return false;
         }

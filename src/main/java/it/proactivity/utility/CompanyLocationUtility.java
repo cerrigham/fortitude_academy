@@ -18,12 +18,16 @@ import static it.proactivity.utility.Utility.checkIfNullOrEmpty;
 public class CompanyLocationUtility {
 
     public static Boolean insertOrUpdateCompanyLocation(Session session, String city, String address, Long id) {
-        if (session == null || checkIfNullOrEmpty(city) || checkIfNullOrEmpty(address)) {
+        if (session == null) {
             return false;
         }
         checkSession(session);
 
         if (id == null) {
+            if (checkIfNullOrEmpty(city) || checkIfNullOrEmpty(address)) {
+                endSession(session);
+                return false;
+            }
             CompanyLocation companyLocation = createACompanyLocation(city, address);
             session.persist(companyLocation);
             endSession(session);
@@ -43,9 +47,14 @@ public class CompanyLocationUtility {
     }
 
     public static Boolean deleteACompanyLocation(Session session, Long id) {
-        if (session == null || id == null) {
+        if (session == null) {
             return false;
         }
+        if (id == null) {
+            endSession(session);
+            return false;
+        }
+
         checkSession(session);
         final String query = "SELECT c " +
                 "FROM CompanyLocation c " +

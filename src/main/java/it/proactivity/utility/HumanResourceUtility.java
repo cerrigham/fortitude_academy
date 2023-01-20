@@ -1,12 +1,12 @@
 package it.proactivity.utility;
 
-import it.proactivity.model.Company;
 import it.proactivity.model.HumanResource;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
 import javax.persistence.criteria.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -16,22 +16,26 @@ import static it.proactivity.utility.Utility.checkIfNullOrEmpty;
 
 public class HumanResourceUtility {
 
-    public static Boolean insertOrUpdateHumanResource(Session session, String name, Long id, String surname,
+    public static Boolean insertOrUpdateHumanResource(Session session, Long id, String name, String surname,
                                                       String email, String phoneNumber, String vatCode, Boolean isCeo,
                                                       Boolean isCda) {
-        if (checkIfNullOrEmpty(name) || checkIfNullOrEmpty(surname)
-                || checkIfNullOrEmpty(email) || checkIfNullOrEmpty(phoneNumber) ||checkIfNullOrEmpty(vatCode)) {
+        if (session == null) {
             return false;
         }
         checkSession(session);
 
         if (id == null) {
+            if (checkIfNullOrEmpty(name) || checkIfNullOrEmpty(surname) || checkIfNullOrEmpty(email)
+                    || checkIfNullOrEmpty(phoneNumber) || checkIfNullOrEmpty(phoneNumber) || checkIfNullOrEmpty(vatCode)) {
+                endSession(session);
+                return false;
+            }
             HumanResource humanResource = createAHumanResource(name, surname, email, phoneNumber, vatCode, isCeo, isCda);
             session.persist(humanResource);
             endSession(session);
             return true;
         } else {
-            HumanResource humanResource = getAHumanResource(session, id);
+            HumanResource humanResource = getAHumanResourceById(session, id);
             if (humanResource == null) {
                 endSession(session);
                 return null;
@@ -46,11 +50,15 @@ public class HumanResourceUtility {
     }
 
     public static Boolean deleteAHumanResource(Session session, Long id) {
-        if (session == null || id == null) {
+        if (session == null) {
             return false;
         }
-        checkSession(session);
+        if (id == null) {
+            endSession(session);
+            return false;
+        }
 
+        checkSession(session);
         final String query = "SELECT h " +
                 "FROM HumanResource h " +
                 "WHERE h.id = :id";
@@ -79,7 +87,7 @@ public class HumanResourceUtility {
         return humanResource;
     }
 
-    private static HumanResource getAHumanResource(Session session, Long id) {
+    public static HumanResource getAHumanResourceById(Session session, Long id) {
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<HumanResource> cr = cb.createQuery(HumanResource.class);
         Root<HumanResource> root = cr.from(HumanResource.class);
@@ -115,12 +123,29 @@ public class HumanResourceUtility {
         if (checkIfNullOrEmpty(vatCode)) {
             humanResource.setVatCode(vatCode);
         }
-        if (isCeo == null) {
+        if (checkIfCeo(humanResource)) {
             humanResource.setIsCeo(isCeo);
         }
-        if (isCda == null) {
+        if (checkIfCda(humanResource)) {
             humanResource.setIsCda(isCda);
         }
     }
 
+    private static Boolean checkIfCeo(HumanResource humanResource) {
+        List<HumanResource> ceoList = new ArrayList<>();
+        ceoList.add(humanResource);
+        if (ceoList.size() > 1) {
+            return false;
+        }
+        return true;
+    }
+
+    private static Boolean checkIfCda(HumanResource humanResource) {
+        List<HumanResource> cdaList = new ArrayList<>();
+        cdaList.add(humanResource);
+        if (cdaList.size() > 4) {
+            return false;
+        }
+        return true;
+    }
 }
