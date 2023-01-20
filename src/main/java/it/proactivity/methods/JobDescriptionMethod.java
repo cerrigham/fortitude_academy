@@ -15,7 +15,7 @@ import java.util.NoSuchElementException;
 
 public class JobDescriptionMethod {
 
-    public static Boolean insertOrUpdateJobDescription(Session session, Long id, Long technology, Long project)
+    public static Boolean createOrUpdateJobDescription(Session session, Long id, Long technologyId, Long projectId)
             throws NoSuchElementException {
         if (session == null) {
             return false;
@@ -23,7 +23,11 @@ public class JobDescriptionMethod {
 
         if (id == null) {
             //Create JobDescription
-            JobDescription jobDescription = createJobDescription(session, technology, project);
+            if (technologyId == null || projectId == null) {
+                SessionUtility.endSession(session);
+                return false;
+            }
+            JobDescription jobDescription = createJobDescription(session, technologyId, projectId);
             session.persist(jobDescription);
             SessionUtility.endSession(session);
 
@@ -36,7 +40,7 @@ public class JobDescriptionMethod {
                 return false;
             } else {
 
-                checkParameterForUpdate(session, jobDescription, technology, project);
+                setParametersForUpdate(session, jobDescription, technologyId, projectId);
                 SessionUtility.endSession(session);
                 return true;
             }
@@ -44,10 +48,13 @@ public class JobDescriptionMethod {
     }
 
     public static Boolean deleteFromJobDescription(Session session, Long id) throws NoSuchElementException {
-        if ((checkInputParameter(session, id))) {
-            SessionUtility.endSession(session);
-            return false;
-        }
+       if (session == null) {
+           return false;
+       }
+       if (id == null) {
+           SessionUtility.endSession(session);
+           return false;
+       }
 
         JobDescription jobDescription = getJobDescriptionById(session, id);
 
@@ -65,11 +72,13 @@ public class JobDescriptionMethod {
 
         Technology technology = getTechnologyById(session, technologyId);
         if (technology == null) {
+            SessionUtility.endSession(session);
             return null;
         }
 
         Project project = getProjectById(session, projectID);
         if (project == null) {
+            SessionUtility.endSession(session);
             return null;
         }
 
@@ -136,11 +145,8 @@ public class JobDescriptionMethod {
         } else
             return  projects.get(0);
     }
-    private static Boolean checkInputParameter(Session session, Long id) {
-        return session == null || id == null || id.equals(0L);
-    }
 
-    private static void checkParameterForUpdate(Session session, JobDescription jobDescription, Long technologyId, Long projectId) {
+    private static void setParametersForUpdate(Session session, JobDescription jobDescription, Long technologyId, Long projectId) {
 
         Technology technology = getTechnologyById(session, technologyId);
         if (technology != null) {

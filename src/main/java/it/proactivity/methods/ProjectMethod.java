@@ -17,31 +17,40 @@ import java.util.NoSuchElementException;
 public class ProjectMethod {
 
     public static Boolean createOrUpdateProject(Session session, Long id, String name, String endDate, String reportingId,
-                                                Long customer) throws NoSuchElementException {
+                                                Long customerId) throws NoSuchElementException {
         if (session == null) {
             return false;
         }
 
+
         if (id == null) {
             //Create project
+            if (customerId == null || name == null || endDate == null || reportingId == null) {
+                SessionUtility.endSession(session);
+                return false;
+            }
+
             LocalDate parsedDate = ParsingUtility.parseStringIntoDate(endDate);
             if (parsedDate == null) {
                 SessionUtility.endSession(session);
                 return false;
             }
 
-            Project project = createProject(session, name, parsedDate, reportingId, customer);
+            Project project = createProject(session, name, parsedDate, reportingId, customerId);
+            if (project == null) {
+                SessionUtility.endSession(session);
+                return false;
+            }
             session.persist(project);
             SessionUtility.endSession(session);
             return true;
         } else {
-
             Project project = getProjectById(session, id);
             if (project == null) {
                 SessionUtility.endSession(session);
                 return false;
             } else {
-                checkParameterForUpdate(session, project, name, endDate, reportingId, customer);
+                setParametersForUpdate(session, project, name, endDate, reportingId, customerId);
                 SessionUtility.endSession(session);
                 return true;
             }
@@ -49,7 +58,11 @@ public class ProjectMethod {
     }
 
     public static Boolean deleteFromProject(Session session, Long id) throws NoSuchElementException {
-        if(session == null || id == null) {
+        if(session == null) {
+            return false;
+        }
+        if (id == null) {
+            SessionUtility.endSession(session);
             return false;
         }
 
@@ -67,8 +80,10 @@ public class ProjectMethod {
 
     private static Project createProject(Session session, String name, LocalDate date, String reportingId, Long customerId) {
 
+
         Customer customer = getCustomerById(session, customerId);
         if (customer == null) {
+            SessionUtility.endSession(session);
             return null;
         }
         Project project = new Project();
@@ -117,7 +132,7 @@ public class ProjectMethod {
             return  projects.get(0);
     }
 
-    private static void checkParameterForUpdate(Session session, Project project, String name, String date, String reportingId,
+    private static void setParametersForUpdate(Session session, Project project, String name, String date, String reportingId,
                                                 Long customerId) {
 
         Utility utility = new Utility();
@@ -126,6 +141,7 @@ public class ProjectMethod {
         }
         if (!(utility.isNullOrEmpty(date))) {
             LocalDate parsedDate = ParsingUtility.parseStringIntoDate(date);
+
             project.setEndDate(parsedDate);
         }
         if (!(utility.isNullOrEmpty(reportingId))) {

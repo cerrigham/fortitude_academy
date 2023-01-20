@@ -15,14 +15,16 @@ import java.util.NoSuchElementException;
 public class TechnologyMethod {
 
     public static Boolean createOrUpdateTechnology(Session session, Long id, String name) throws NoSuchElementException {
+        Utility utility = new Utility();
         if (session == null) {
             return false;
         }
 
+
         if (id == null) {
             //Create technology
-            Utility utility = new Utility();
             if(utility.isNullOrEmpty(name)) {
+                SessionUtility.endSession(session);
                 return false;
             }
             Technology technology = createTechnology(name);
@@ -30,13 +32,13 @@ public class TechnologyMethod {
             SessionUtility.endSession(session);
             return true;
         } else {
-
+            // update technology
             Technology technology = getTechnologyById(session, id);
-            if (technology == null ){
+            if (technology == null || utility.isNullOrEmpty(name)) {
                 SessionUtility.endSession(session);
                 return false;
             } else {
-                checkParameterForUpdate(technology, name);
+                setParametersForUpdate(technology, name);
                 SessionUtility.endSession(session);
                 return true;
             }
@@ -44,7 +46,11 @@ public class TechnologyMethod {
     }
 
     public static Boolean deleteFromTechnology(Session session, Long id) throws NoSuchElementException {
-        if(session == null || id == null) {
+        if(session == null) {
+            return false;
+        }
+        if (id == null || id.equals(0l)) {
+            SessionUtility.endSession(session);
             return false;
         }
 
@@ -85,7 +91,7 @@ public class TechnologyMethod {
             return  technologies.get(0);
     }
 
-    private static void checkParameterForUpdate(Technology technology, String name) {
+    private static void setParametersForUpdate(Technology technology, String name) {
 
         Utility utility = new Utility();
         if (!utility.isNullOrEmpty(name)) {

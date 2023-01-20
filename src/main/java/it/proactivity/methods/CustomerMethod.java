@@ -23,6 +23,7 @@ public class CustomerMethod {
             Utility utility = new Utility();
 
             if(utility.isNullOrEmpty(name) || utility.isNullOrEmpty(email) || utility.isNullOrEmpty(phoneNumber)) {
+                SessionUtility.endSession(session);
                 return false;
             }
 
@@ -46,7 +47,11 @@ public class CustomerMethod {
     }
 
     public static Boolean deleteFromCustomer(Session session, Long id) throws NoSuchElementException {
-        if(session == null || id == null) {
+        if(session == null) {
+            return false;
+        }
+        if (id == null) {
+            SessionUtility.endSession(session);
             return false;
         }
         Customer customer = getCustomerById(session, id);
