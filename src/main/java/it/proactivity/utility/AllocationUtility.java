@@ -14,8 +14,10 @@ import static it.proactivity.utility.SessionUtility.endSession;
 
 public class AllocationUtility {
 
-    public static Allocation createAnAllocation(HumanResource humanResource, Project project) {
+    public static Allocation createAnAllocation(Long humanResourceId, Long projectId) {
+        if (humanResourceId == null || projectId == null) {
 
+        }
     }
 
     public static Boolean deleteAnAllocation(Session session, Long id){

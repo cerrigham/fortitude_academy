@@ -2,12 +2,11 @@ package it.proactivity.utility;
 
 import it.proactivity.model.Company;
 import it.proactivity.model.CompanyLocation;
-import it.proactivity.model.HumanResource;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
 import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaDelete;
+import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
 import static it.proactivity.utility.SessionUtility.checkSession;
@@ -25,6 +24,29 @@ public class CompanyLocationUtility {
         return companyLocation;
     }
 
+    private static List<CompanyLocation> checkACompanyLocation(Session session, Long id) {
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<CompanyLocation> cr = cb.createQuery(CompanyLocation.class);
+        Root<CompanyLocation> root = cr.from(CompanyLocation.class);
+        cr.select(root).where(cb.equal(root.get("id"), id));
+
+        Query<CompanyLocation> query = session.createQuery(cr);
+        List<CompanyLocation> companyLocationList = query.getResultList();
+        if (companyLocationList.size() > 1) {
+            return null;
+        }
+        return companyLocationList;
+    }
+
+    private static void checkForUpdate(CompanyLocation companyLocation, String city, String address) {
+        if (city == null) {
+            companyLocation.setCity(city);
+        }
+        if (address == null) {
+            companyLocation.setAddress(address);
+        }
+    }
+
     public static Boolean insertOrUpdateCompanyLocation(Session session, String city, String address, Long id) {
         if (session == null || city == null || address == null) {
             return false;
@@ -32,28 +54,21 @@ public class CompanyLocationUtility {
         checkSession(session);
 
         if (id == null) {
-            Query query = session.createSQLQuery("INSERT INTO company_location (city, address) " +
-                    "VALUES (:city, :address)");
-            query.setParameter("city", city);
-            query.setParameter("address", address);
-            int res = query.executeUpdate();
-            if (res != 0) {
-                return true;
-            }
-            return false;
+            CompanyLocation companyLocation = createACompanyLocation(city, address);
+            session.persist(companyLocation);
+            endSession(session);
+            return true;
         }
-        if (id != null) {
-            Query query = session.createSQLQuery("UPDATE company_location c " +
-                    "WHERE c.id = :id");
-            query.setParameter("id", id);
-            int res = query.executeUpdate();
-            if (res != 0) {
-                return true;
-            }
-            return false;
+        List<CompanyLocation> companyLocationList = checkACompanyLocation(session, id);
+        if (companyLocationList.size() == 0) {
+            endSession(session);
+        } else {
+            CompanyLocation companyLocation = companyLocationList.get(0);
+            checkForUpdate(companyLocation, city, address);
+            endSession(session);
+            return true;
         }
-        endSession(session);
-        return true;
+        return false;
     }
 
     public static Boolean deleteACompanyLocation(Session session, Long id) {
