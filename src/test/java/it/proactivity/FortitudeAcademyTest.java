@@ -129,21 +129,21 @@ public class FortitudeAcademyTest {
     @Test
     public void insertOrUpdateTechnologyInsertionPositiveTest() {
         Session session = SessionUtility.createSession();
-        assertTrue(TechnologyMethod.insertOrUpdateTechnology(session, null, "Java"));
+        assertTrue(TechnologyMethod.createOrUpdateTechnology(session, null, "Java"));
         assertFalse(session.isOpen());
     }
 
     @Test
     public void insertOrUpdateTechnologyUpdatingPositiveTest() {
         Session session = SessionUtility.createSession();
-        assertTrue(TechnologyMethod.insertOrUpdateTechnology(session, 1l, "Spring"));
+        assertTrue(TechnologyMethod.createOrUpdateTechnology(session, 1l, "Spring"));
         assertFalse(session.isOpen());
     }
 
     @Test
     public void insertOrUpdateTechnologyNullNameNegativeTest() {
         Session session = SessionUtility.createSession();
-        assertFalse(TechnologyMethod.insertOrUpdateTechnology(session, null, null));
+        assertFalse(TechnologyMethod.createOrUpdateTechnology(session, null, null));
         assertFalse(session.isOpen());
     }
 
@@ -164,7 +164,7 @@ public class FortitudeAcademyTest {
     @Test
     public void insertOrUpdateProjectPositiveInsertionTest() {
         Session session = SessionUtility.createSession();
-        assertTrue(ProjectMethod.insertOrUpdateProject(session, null, "Php project", "2023-01-19",
+        assertTrue(ProjectMethod.createOrUpdateProject(session, null, "Php project", "2023-01-19",
                 "1112203938", 3l));
         assertFalse(session.isOpen());
     }
@@ -172,7 +172,7 @@ public class FortitudeAcademyTest {
     @Test
     public void insertOrUpdateProjectPositiveUpdatingTest() {
         Session session = SessionUtility.createSession();
-        assertTrue(ProjectMethod.insertOrUpdateProject(session, 1l, "Java", "",
+        assertTrue(ProjectMethod.createOrUpdateProject(session, 1l, "Java", "",
                 "11", 4l));
         assertFalse(session.isOpen());
     }
@@ -180,7 +180,7 @@ public class FortitudeAcademyTest {
     @Test
     public void insertOrUpdateProjectNullNameNegativeTest() {
         Session session = SessionUtility.createSession();
-        assertFalse(ProjectMethod.insertOrUpdateProject(session, 1l, null, "",
+        assertFalse(ProjectMethod.createOrUpdateProject(session, 1l, null, "",
                 "11", 4l));
         assertFalse(session.isOpen());
     }
@@ -188,7 +188,7 @@ public class FortitudeAcademyTest {
     @Test
     public void insertOrUpdateProjectNullEndDateNegativeTest() {
         Session session = SessionUtility.createSession();
-        assertFalse(ProjectMethod.insertOrUpdateProject(session, 1l, "Java", null,
+        assertFalse(ProjectMethod.createOrUpdateProject(session, 1l, "Java", null,
                 "11", 4l));
         assertFalse(session.isOpen());
     }
@@ -196,14 +196,14 @@ public class FortitudeAcademyTest {
     @Test
     public void insertOrUpdateProjectNullReportingIdNegativeTest() {
         Session session = SessionUtility.createSession();
-        assertFalse(ProjectMethod.insertOrUpdateProject(session, 1l, "Java", "", null, 4l));
+        assertFalse(ProjectMethod.createOrUpdateProject(session, 1l, "Java", "", null, 4l));
         assertFalse(session.isOpen());
     }
 
     @Test
     public void insertOrUpdateProjectCustomerNameNegativeTest() {
         Session session = SessionUtility.createSession();
-        assertFalse(ProjectMethod.insertOrUpdateProject(session, 1l, "java", "",
+        assertFalse(ProjectMethod.createOrUpdateProject(session, 1l, "java", "",
                 "11", null));
         assertFalse(session.isOpen());
     }

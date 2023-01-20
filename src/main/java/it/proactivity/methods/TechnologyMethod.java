@@ -3,6 +3,7 @@ package it.proactivity.methods;
 
 import it.proactivity.model.Technology;
 import it.proactivity.utility.SessionUtility;
+import it.proactivity.utility.Utility;
 import org.hibernate.Session;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -13,25 +14,28 @@ import java.util.NoSuchElementException;
 
 public class TechnologyMethod {
 
-    public static Boolean insertOrUpdateTechnology(Session session, Long id, String name) {
-        if (checkInputParameter(session, name)) {
-            SessionUtility.endSession(session);
+    public static Boolean createOrUpdateTechnology(Session session, Long id, String name) throws NoSuchElementException {
+        if (session == null) {
             return false;
         }
 
         if (id == null) {
+            //Create technology
+            Utility utility = new Utility();
+            if(utility.isNullOrEmpty(name)) {
+                return false;
+            }
             Technology technology = createTechnology(name);
             session.persist(technology);
             SessionUtility.endSession(session);
             return true;
         } else {
 
-            List<Technology> technologies = checkTechnology(session, id);
-            if (technologies.size() == 0) {
+            Technology technology = getTechnologyById(session, id);
+            if (technology == null ){
                 SessionUtility.endSession(session);
                 return false;
             } else {
-                Technology technology = technologies.get(0);
                 checkParameterForUpdate(technology, name);
                 SessionUtility.endSession(session);
                 return true;
@@ -39,19 +43,18 @@ public class TechnologyMethod {
         }
     }
 
-    public static Boolean deleteFromTechnology(Session session, Long id) {
-        if ((checkInputParameter(session, id))) {
-            SessionUtility.endSession(session);
+    public static Boolean deleteFromTechnology(Session session, Long id) throws NoSuchElementException {
+        if(session == null || id == null) {
             return false;
         }
 
-        List<Technology> customers = checkTechnology(session, id);
+        Technology technology = getTechnologyById(session, id);
 
-        if (customers.isEmpty()) {
+        if (technology == null) {
             SessionUtility.endSession(session);
             return false;
         } else {
-            session.delete(customers.get(0));
+            session.delete(technology);
             SessionUtility.endSession(session);
             return true;
         }
@@ -63,7 +66,7 @@ public class TechnologyMethod {
         return technology;
     }
 
-    private static List<Technology> checkTechnology(Session session, Long id) {
+    private static Technology getTechnologyById(Session session, Long id) {
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<Technology> cq = cb.createQuery(Technology.class);
         Root<Technology> root = cq.from(Technology.class);
@@ -72,26 +75,21 @@ public class TechnologyMethod {
 
         Query query = session.createQuery(cq);
         List<Technology> technologies = query.getResultList();
-        if (technologies.size() > 1) {
+        if(technologies == null) {
+            return null;
+        } else if(technologies.isEmpty()) {
+            return null;
+        } else if(technologies.size() > 1) {
             throw new NoSuchElementException("The result query get more than one result");
-        }
-
-        return technologies;
-    }
-
-    private static Boolean checkInputParameter(Session session, String name) {
-
-        return session == null || name == null;
-    }
-
-    private static Boolean checkInputParameter(Session session, Long id) {
-        return session == null || id == null || id.equals(0L);
+        } else
+            return  technologies.get(0);
     }
 
     private static void checkParameterForUpdate(Technology technology, String name) {
 
-        if (!(name.isEmpty())) {
-                technology.setName(name);
+        Utility utility = new Utility();
+        if (!utility.isNullOrEmpty(name)) {
+            technology.setName(name);
         }
     }
 }

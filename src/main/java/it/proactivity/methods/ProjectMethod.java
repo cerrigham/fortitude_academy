@@ -4,6 +4,7 @@ import it.proactivity.model.Customer;
 import it.proactivity.model.Project;
 import it.proactivity.utility.ParsingUtility;
 import it.proactivity.utility.SessionUtility;
+import it.proactivity.utility.Utility;
 import org.hibernate.Session;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -15,15 +16,14 @@ import java.util.NoSuchElementException;
 
 public class ProjectMethod {
 
-    public static Boolean insertOrUpdateProject(Session session, Long id, String name, String endDate, String reportingId,
-                                                 Long customer) {
-        if (checkInputParameter(session, name, endDate, reportingId, customer)) {
-            SessionUtility.endSession(session);
+    public static Boolean createOrUpdateProject(Session session, Long id, String name, String endDate, String reportingId,
+                                                Long customer) throws NoSuchElementException {
+        if (session == null) {
             return false;
         }
 
-
         if (id == null) {
+            //Create project
             LocalDate parsedDate = ParsingUtility.parseStringIntoDate(endDate);
             if (parsedDate == null) {
                 SessionUtility.endSession(session);
@@ -36,12 +36,11 @@ public class ProjectMethod {
             return true;
         } else {
 
-            List<Project> projects = checkProject(session, id);
-            if (projects.size() == 0) {
+            Project project = getProjectById(session, id);
+            if (project == null) {
                 SessionUtility.endSession(session);
                 return false;
             } else {
-                Project project = projects.get(0);
                 checkParameterForUpdate(session, project, name, endDate, reportingId, customer);
                 SessionUtility.endSession(session);
                 return true;
@@ -49,39 +48,38 @@ public class ProjectMethod {
         }
     }
 
-    public static Boolean deleteFromProject(Session session, Long id) {
-        if ((checkInputParameter(session, id))) {
-            SessionUtility.endSession(session);
+    public static Boolean deleteFromProject(Session session, Long id) throws NoSuchElementException {
+        if(session == null || id == null) {
             return false;
         }
 
-        List<Project> projects = checkProject(session, id);
+        Project project = getProjectById(session, id);
 
-        if (projects.isEmpty()) {
+        if (project == null) {
             SessionUtility.endSession(session);
             return false;
         } else {
-            session.delete(projects.get(0));
+            session.delete(project);
             SessionUtility.endSession(session);
             return true;
         }
     }
 
-    private static Project createProject(Session session, String name, LocalDate date, String reportingId, Long customer) {
+    private static Project createProject(Session session, String name, LocalDate date, String reportingId, Long customerId) {
 
-        List<Customer> customers = checkCustomer(session, customer);
-        if (customers.isEmpty()) {
+        Customer customer = getCustomerById(session, customerId);
+        if (customer == null) {
             return null;
         }
         Project project = new Project();
         project.setName(name);
         project.setEndDate(date);
         project.setReportingId(reportingId);
-        project.setCustomer(customers.get(0));
+        project.setCustomer(customer);
         return project;
     }
 
-    private static List<Customer> checkCustomer(Session session, Long id) {
+    private static Customer getCustomerById(Session session, Long id) {
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<Customer> cq = cb.createQuery(Customer.class);
         Root<Customer> root = cq.from(Customer.class);
@@ -90,13 +88,17 @@ public class ProjectMethod {
 
         Query query = session.createQuery(cq);
         List<Customer> customerList = query.getResultList();
-        if (customerList.size() > 1) {
-            throw new NoSuchElementException("The result query get more than one result");
-        }
 
-        return customerList;
+        if(customerList == null) {
+            return null;
+        } else if(customerList.isEmpty()) {
+            return null;
+        } else if(customerList.size() > 1) {
+            throw new NoSuchElementException("The result query get more than one result");
+        } else
+            return  customerList.get(0);
     }
-    private static List<Project> checkProject(Session session, Long id) {
+    private static Project getProjectById(Session session, Long id) {
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<Project> cq = cb.createQuery(Project.class);
         Root<Project> root = cq.from(Project.class);
@@ -105,41 +107,34 @@ public class ProjectMethod {
 
         Query query = session.createQuery(cq);
         List<Project> projects  = query.getResultList();
-        if (projects.size() > 1) {
+        if(projects == null) {
+            return null;
+        } else if(projects.isEmpty()) {
+            return null;
+        } else if(projects.size() > 1) {
             throw new NoSuchElementException("The result query get more than one result");
-        }
-
-        return projects;
+        } else
+            return  projects.get(0);
     }
-
-    private static Boolean checkInputParameter(Session session, String name, String endDate, String reportingId,
-                                               Long customer) {
-
-        return session == null || name == null || endDate == null || reportingId == null || customer == null;
-    }
-
-    private static Boolean checkInputParameter(Session session, Long id) {
-        return session == null || id == null || id.equals(0L);
-    }
-
 
     private static void checkParameterForUpdate(Session session, Project project, String name, String date, String reportingId,
-                                                Long customer) {
+                                                Long customerId) {
 
-        if (!(name.isEmpty())) {
+        Utility utility = new Utility();
+        if (!(utility.isNullOrEmpty(name))) {
             project.setName(name);
         }
-        if (!(date.isEmpty())) {
+        if (!(utility.isNullOrEmpty(date))) {
             LocalDate parsedDate = ParsingUtility.parseStringIntoDate(date);
             project.setEndDate(parsedDate);
         }
-        if (!(reportingId.isEmpty())) {
+        if (!(utility.isNullOrEmpty(reportingId))) {
             project.setReportingId(reportingId);
         }
 
-        List<Customer> customers = checkCustomer(session, customer);
-        if (!(customers.isEmpty())) {
-            project.setCustomer(customers.get(0));
+        Customer customer = getCustomerById(session, customerId);
+        if (customer != null) {
+            project.setCustomer(customer);
         }
     }
 }
