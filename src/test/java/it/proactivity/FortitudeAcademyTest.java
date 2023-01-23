@@ -4,9 +4,15 @@ import it.proactivity.methods.CustomerMethod;
 import it.proactivity.methods.JobDescriptionMethod;
 import it.proactivity.methods.ProjectMethod;
 import it.proactivity.methods.TechnologyMethod;
+import it.proactivity.model.Customer;
+import it.proactivity.model.JobDescription;
+import it.proactivity.model.Project;
+import it.proactivity.model.Technology;
 import it.proactivity.utility.SessionUtility;
 import org.hibernate.Session;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -425,5 +431,490 @@ public class FortitudeAcademyTest {
         assertFalse(JobDescriptionMethod.deleteFromJobDescription(session, 12l));
         assertFalse(session.isOpen());
     }
+
+    @Test
+    public void findCustomerFromIdPositiveTest() {
+        Session session = SessionUtility.createSession();
+
+        Customer customer = CustomerMethod.findCustomerFromId(session, 3l);
+        assertTrue(customer.getId() == 3l);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findCustomerFromIdWithIdEqualToZeroNegativeTest() {
+        Session session = SessionUtility.createSession();
+
+        Customer customer = CustomerMethod.findCustomerFromId(session, 0l);
+        assertNull(customer);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findCustomerFromIdWithIdNullNegativeTest() {
+        Session session = SessionUtility.createSession();
+
+        Customer customer = CustomerMethod.findCustomerFromId(session, null);
+        assertNull(customer);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findTechnologyFromIdPositiveTest() {
+        Session session = SessionUtility.createSession();
+
+        Technology technology = TechnologyMethod.findTechnologyFromId(session, 3l);
+        assertTrue(technology.getId() == 3l);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findTechnologyFromIdWithIdEqualToZeroNegativeTest() {
+        Session session = SessionUtility.createSession();
+
+        Technology technology = TechnologyMethod.findTechnologyFromId(session, 0l);
+        assertNull(technology);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findTechnologyFromIdWithIdNullNegativeTest() {
+        Session session = SessionUtility.createSession();
+
+        Technology technology = TechnologyMethod.findTechnologyFromId(session, null);
+        assertNull(technology);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findProjectFromIdPositiveTest() {
+        Session session = SessionUtility.createSession();
+
+        Project project = ProjectMethod.findProjectFromId(session, 4l);
+        assertNotNull(project);
+        assertTrue(project.getId() == 4);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findProjectFromIdWithIdEqualToZeroNegativeTest() {
+        Session session = SessionUtility.createSession();
+
+        Project project = ProjectMethod.findProjectFromId(session, 0l);
+        assertNull(project);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findProjectFromIdWithIdNullNegativeTest() {
+        Session session = SessionUtility.createSession();
+
+        Project project = ProjectMethod.findProjectFromId(session, null);
+        assertNull(project);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findJobDescriptionFromIdPositiveTest() {
+        Session session = SessionUtility.createSession();
+
+        JobDescription jobDescription = JobDescriptionMethod.findJobDescriptionFromId(session, 4l);
+        assertNotNull(jobDescription);
+        assertTrue(jobDescription.getId() == 4);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void  findJobDescriptionFromidWithIdEqualToZeroNegativeTest() {
+        Session session = SessionUtility.createSession();
+
+        JobDescription jobDescription = JobDescriptionMethod.findJobDescriptionFromId(session, 0l);
+        assertNull(jobDescription);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void  findJobDescriptionFromidWithIdNullNegativeTest() {
+        Session session = SessionUtility.createSession();
+
+        JobDescription jobDescription = JobDescriptionMethod.findJobDescriptionFromId(session, null);
+        assertNull(jobDescription);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findCustomersFromNamePositiveTest() {
+        Session session = SessionUtility.createSession();
+
+        List<Customer> customers = CustomerMethod.findCustomersFromName(session,"roberto");
+
+        assertNotNull(customers);
+        assertTrue(customers.get(1).getId() == 8);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findCustomersFromNameWithWrongNameNegativeTest() {
+        Session session = SessionUtility.createSession();
+
+        List<Customer> customers = CustomerMethod.findCustomersFromName(session, "Giovanna");
+
+        assertNull(customers);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findCustomersFromNameWithNullNameNegativeTest() {
+        Session session = SessionUtility.createSession();
+
+        List<Customer> customers = CustomerMethod.findCustomersFromName(session, null);
+
+        assertNull(customers);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findCustomersFromNameWithEmptyNameNegativeTest() {
+        Session session = SessionUtility.createSession();
+
+        List<Customer> customers = CustomerMethod.findCustomersFromName(session, "");
+
+        assertNull(customers);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findProjectsFromNamePositiveTest() {
+        Session session = SessionUtility.createSession();
+
+        List<Project> projects = ProjectMethod.findProjectsFromName(session, "Java");
+
+        assertNotNull(projects);
+        assertTrue(projects.get(0).getId() == 6);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findProjectsFromNameWithNullNameNegativeTest() {
+        Session session = SessionUtility.createSession();
+
+        List<Project> projects = ProjectMethod.findProjectsFromName(session, null);
+
+        assertNull(projects);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findProjectsFromNameWithEmptyNameNameNegativeTest() {
+        Session session = SessionUtility.createSession();
+
+        List<Project> projects = ProjectMethod.findProjectsFromName(session, "");
+
+        assertNull(projects);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findProjectsFromNameWithWrongNameNegativeTest() {
+        Session session = SessionUtility.createSession();
+
+        List<Project> projects = ProjectMethod.findProjectsFromName(session, "Javascript");
+
+        assertNull(projects);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findTechnologiesFromNamePositiveTest() {
+        Session session = SessionUtility.createSession();
+
+        List<Technology> technologies = TechnologyMethod.findTechnologiesFromName(session, "Postgree");
+
+        assertNotNull(technologies);
+        assertTrue(technologies.get(0).getId() == 3);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findTechnologiesFromNameWithNullNameNegativeTest() {
+        Session session = SessionUtility.createSession();
+        List<Technology> technologies = TechnologyMethod.findTechnologiesFromName(session, null);
+
+        assertNull(technologies);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findTechnologiesFromNameWithEmptyNameNegativeTest() {
+        Session session = SessionUtility.createSession();
+        List<Technology> technologies = TechnologyMethod.findTechnologiesFromName(session, "");
+
+        assertNull(technologies);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findTechnologiesFromNameWithWrongNameNegativeTest() {
+        Session session = SessionUtility.createSession();
+        List<Technology> technologies = TechnologyMethod.findTechnologiesFromName(session, "Mysql");
+
+        assertNull(technologies);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findProjectsFromDatePositiveTest() {
+        Session session = SessionUtility.createSession();
+
+        List<Project> projects = ProjectMethod.findProjectsFromDate(session, "2023-01-19");
+        assertNotNull(projects);
+        assertTrue(projects.get(0).getId() == 2);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findProjectsFromDateWithEmptyDateNegativeTest() {
+        Session session = SessionUtility.createSession();
+        List<Project> projects = ProjectMethod.findProjectsFromDate(session, "");
+
+        assertNull(projects);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findProjectsFromDateWithNullDateNegativeTest() {
+        Session session = SessionUtility.createSession();
+        List<Project> projects = ProjectMethod.findProjectsFromDate(session, null);
+
+        assertNull(projects);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findProjectsFromDateWithWrongDateNegativeTest() {
+        Session session = SessionUtility.createSession();
+        List<Project> projects = ProjectMethod.findProjectsFromDate(session,"2023-09-21");
+
+        assertNull(projects);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findProjectsFromDateWithWrongFormatDateNegativeTest() {
+        Session session = SessionUtility.createSession();
+        List<Project> projects = ProjectMethod.findProjectsFromDate(session,"03-09-2023");
+
+        assertNull(projects);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findProjectsFromReportingIdPositiveTest() {
+        Session session = SessionUtility.createSession();
+        List<Project> projects = ProjectMethod.findProjectsFromReportingId(session,"1");
+        assertNotNull(projects);
+        assertTrue(projects.get(0).getId() == 6);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findProjectsFromreportingIdWithNullValueNegativeTest() {
+        Session session = SessionUtility.createSession();
+        List<Project> projects = ProjectMethod.findProjectsFromReportingId(session,null);
+        assertNull(projects);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findProjectsFromreportingIdWithEmptyValueNegativeTest() {
+        Session session = SessionUtility.createSession();
+        List<Project> projects = ProjectMethod.findProjectsFromReportingId(session,"");
+        assertNull(projects);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findProjectsFromreportingIdWithWrongValueNegativeTest() {
+        Session session = SessionUtility.createSession();
+        List<Project> projects = ProjectMethod.findProjectsFromReportingId(session,"22");
+        assertNull(projects);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findProjectsFromCustomerPositiveTest() {
+        Session session = SessionUtility.createSession();
+
+        List<Project> projects = ProjectMethod.findProjectFromCustomer(session, 3l);
+        assertNotNull(projects);
+        assertTrue(projects.get(0).getId() == 2);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findProjectsFromCustomerWithCustomerIdNullNegativeTest() {
+        Session session = SessionUtility.createSession();
+
+        List<Project> projects = ProjectMethod.findProjectFromCustomer(session, null);
+        assertNull(projects);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findProjectsFromCustomerWithCustomerIdEqualToZeroNegativeTest() {
+        Session session = SessionUtility.createSession();
+
+        List<Project> projects = ProjectMethod.findProjectFromCustomer(session, 0l);
+        assertNull(projects);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findCustomerFromEmailPositiveTest() {
+        Session session = SessionUtility.createSession();
+        List<Customer> customers = CustomerMethod.findCustomerFromEmail(session, "prova@prova.it");
+        assertNotNull(customers);
+        assertTrue(customers.get(0).getId() == 5);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findCustomerFromEmailWithNullEmailNegativeTest() {
+        Session session = SessionUtility.createSession();
+        List<Customer> customers = CustomerMethod.findCustomerFromEmail(session, null);
+        assertNull(customers);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findCustomerFromEmailWithEmptyEmailNegativeTest() {
+        Session session = SessionUtility.createSession();
+        List<Customer> customers = CustomerMethod.findCustomerFromEmail(session, "");
+        assertNull(customers);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findCustomerFromEmailWithWrongEmailNegativeTest() {
+        Session session = SessionUtility.createSession();
+        List<Customer> customers = CustomerMethod.findCustomerFromEmail(session, "ciao@ciao.it");
+        assertNull(customers);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findCustomersFromPhoneNumberPositiveTest() {
+        Session session = SessionUtility.createSession();
+        List<Customer> customers = CustomerMethod.findCustomersFromPhoneNumber(session, "83647848");
+        assertNotNull(customers);
+        assertTrue(customers.get(0).getId() == 8);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findCustomersFromPhoneNumberWithNullNumberNegativeTest() {
+        Session session = SessionUtility.createSession();
+        List<Customer> customers = CustomerMethod.findCustomersFromPhoneNumber(session, null);
+        assertNull(customers);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findCustomersFromPhoneNumberWithEmptyNumberNegativeTest() {
+        Session session = SessionUtility.createSession();
+        List<Customer> customers = CustomerMethod.findCustomersFromPhoneNumber(session, "");
+        assertNull(customers);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findCustomersFromPhoneNumberWithWrongNumberNegativeTest() {
+        Session session = SessionUtility.createSession();
+        List<Customer> customers = CustomerMethod.findCustomersFromPhoneNumber(session, "000909");
+        assertNull(customers);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findCustomersFromDetailEmptyDetailPositiveTest() {
+        Session session = SessionUtility.createSession();
+        List<Customer> customers = CustomerMethod.findCustomersFromDetails(session, "");
+
+        assertNotNull(customers);
+        assertTrue(customers.get(0).getId() == 5);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findCustomersFromDetailPositiveTest() {
+        Session session = SessionUtility.createSession();
+        List<Customer> customers = CustomerMethod.findCustomersFromDetails(session, "Insert");
+
+        assertNotNull(customers);
+        assertTrue(customers.get(0).getId() == 3);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findCustomersFromDetailNullDetailNegativeTest() {
+        Session session = SessionUtility.createSession();
+        List<Customer> customers = CustomerMethod.findCustomersFromDetails(session, null);
+
+        assertNull(customers);
+
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findJobDescriptionFromTechnologyPositiveTest() {
+        Session session = SessionUtility.createSession();
+        List<JobDescription> jobDescriptions = JobDescriptionMethod.findJobDescriptionFromTechnology(session, 3l);
+        assertNotNull(jobDescriptions);
+        assertTrue(jobDescriptions.get(0).getId() == 4);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findJobDescriptionFromTechnologyNullIdNegativeTest() {
+        Session session = SessionUtility.createSession();
+        List<JobDescription> jobDescriptions = JobDescriptionMethod.findJobDescriptionFromTechnology(session, null);
+        assertNull(jobDescriptions);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findJobDescriptionFromTechnologyIdEqualToZeroNegativeTest() {
+        Session session = SessionUtility.createSession();
+        List<JobDescription> jobDescriptions = JobDescriptionMethod.findJobDescriptionFromTechnology(session, 0l);
+        assertNull(jobDescriptions);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void  findJobDescriptionFromProjectPositiveTest() {
+        Session session = SessionUtility.createSession();
+        List<JobDescription> jobDescriptions = JobDescriptionMethod.findJobDescriptionFromProject(session, 6l);
+        assertNotNull(jobDescriptions);
+        assertTrue(jobDescriptions.get(0).getId() == 4);
+        assertFalse(session.isOpen());
+    }
+    @Test
+    public void findJobDescriptionFromProjectNullIdNegativeTest() {
+        Session session = SessionUtility.createSession();
+        List<JobDescription> jobDescriptions = JobDescriptionMethod.findJobDescriptionFromProject(session, null);
+        assertNull(jobDescriptions);
+        assertFalse(session.isOpen());
+    }
+
+    @Test
+    public void findJobDescriptionFromProjectIdEqualToZeroNegativeTest() {
+        Session session = SessionUtility.createSession();
+        List<JobDescription> jobDescriptions = JobDescriptionMethod.findJobDescriptionFromProject(session, 0l);
+        assertNull(jobDescriptions);
+        assertFalse(session.isOpen());
+    }
+
+
+
 
 }

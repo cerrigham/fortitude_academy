@@ -8,6 +8,8 @@ import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -66,6 +68,137 @@ public class CustomerMethod {
         }
     }
 
+    public static Customer findCustomerFromId(Session session, Long id) throws NoSuchElementException{
+        if (session == null) {
+            return null;
+        }
+        if (id == null) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+
+
+        Customer customer = (Customer) Utility.findObjectFromLong(session, id,"Customer");
+        if (customer == null) {
+            SessionUtility.endSession(session);
+            return null;
+        }else {
+            SessionUtility.endSession(session);
+            return customer;
+        }
+    }
+
+    public static List<Customer> findCustomersFromName(Session session, String attributeValue) {
+        if (session == null) {
+            return null;
+        }
+        if (attributeValue == null || attributeValue.isEmpty()) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+
+        List<Object> objectList =  Utility.findObjectFromString(session, "name", attributeValue, "Customer");
+
+        if (objectList == null || objectList.isEmpty()) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+
+        List<Customer> customers = new ArrayList<>();
+
+        objectList.stream()
+                .forEach(e -> customers.add((Customer) e));
+
+        customers.stream()
+                .sorted(Comparator.comparing(Customer::getId));
+
+        SessionUtility.endSession(session);
+        return customers;
+    }
+
+    public static List<Customer> findCustomerFromEmail(Session session, String attributeValue) {
+        if (session == null) {
+            return null;
+        }
+        if (attributeValue == null || attributeValue.isEmpty()) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+
+        List<Object> objectList =  Utility.findObjectFromString(session, "email", attributeValue,
+                "Customer");
+
+        if (objectList == null || objectList.isEmpty()) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+
+        List<Customer> customers = new ArrayList<>();
+
+        objectList.stream()
+                .forEach(e -> customers.add((Customer) e));
+
+        customers.stream()
+                .sorted(Comparator.comparing(Customer::getId));
+
+        SessionUtility.endSession(session);
+        return customers;
+    }
+
+    public static List<Customer> findCustomersFromPhoneNumber(Session session, String attributeValue) {
+        if (session == null) {
+            return null;
+        }
+        if (attributeValue == null || attributeValue.isEmpty()) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+
+        List<Object> objectList =  Utility.findObjectFromString(session, "phoneNumber", attributeValue,
+                "Customer");
+
+        if (objectList == null || objectList.isEmpty()) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+
+        List<Customer> customers = new ArrayList<>();
+
+        objectList.stream()
+                .forEach(e -> customers.add((Customer) e));
+
+        customers.stream()
+                .sorted(Comparator.comparing(Customer::getId));
+
+        SessionUtility.endSession(session);
+        return customers;
+    }
+
+    public static List<Customer> findCustomersFromDetails(Session session, String attributeValue) {
+        if (session == null) {
+            return null;
+        }
+
+        List<Object> objectList =  Utility.findObjectFromString(session, "detail", attributeValue,
+                "Customer");
+
+        if (objectList == null || objectList.isEmpty()) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+
+        List<Customer> customers = new ArrayList<>();
+
+        objectList.stream()
+                .forEach(e -> customers.add((Customer) e));
+
+        customers.stream()
+                .sorted(Comparator.comparing(Customer::getId));
+
+        SessionUtility.endSession(session);
+        return customers;
+    }
+
     private static Customer createCustomer(String name, String email, String phoneNumber, String detail) {
         Customer customer = new Customer();
         customer.setName(name);
@@ -116,4 +249,5 @@ public class CustomerMethod {
             customer.setDetail(detail);
         }
     }
+
 }

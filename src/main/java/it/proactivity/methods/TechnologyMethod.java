@@ -1,6 +1,5 @@
 package it.proactivity.methods;
 
-
 import it.proactivity.model.Technology;
 import it.proactivity.utility.SessionUtility;
 import it.proactivity.utility.Utility;
@@ -9,6 +8,8 @@ import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -64,6 +65,54 @@ public class TechnologyMethod {
             SessionUtility.endSession(session);
             return true;
         }
+    }
+
+    public static Technology findTechnologyFromId(Session session, Long id) throws NoSuchElementException{
+        if (session == null) {
+            return null;
+        }
+        if (id == null) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+
+
+        Technology technology = (Technology) Utility.findObjectFromLong(session, id,"Technology");
+        if (technology == null) {
+            SessionUtility.endSession(session);
+            return null;
+        }else {
+            SessionUtility.endSession(session);
+            return technology;
+        }
+    }
+
+    public static List<Technology> findTechnologiesFromName(Session session, String attributeValue) {
+        if (session == null) {
+            return null;
+        }
+        if (attributeValue == null || attributeValue.isEmpty()) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+
+        List<Object> objectList =  Utility.findObjectFromString(session, "name", attributeValue, "Technology");
+
+        if (objectList == null || objectList.isEmpty()) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+
+        List<Technology> technologies = new ArrayList<>();
+
+        objectList.stream()
+                .forEach(e -> technologies.add((Technology) e));
+
+        technologies.stream()
+                .sorted(Comparator.comparing(Technology::getId));
+
+        SessionUtility.endSession(session);
+        return technologies;
     }
 
     private static Technology createTechnology(String name) {

@@ -11,6 +11,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -76,6 +78,140 @@ public class ProjectMethod {
             SessionUtility.endSession(session);
             return true;
         }
+    }
+
+    public static Project findProjectFromId(Session session, Long id)  throws NoSuchElementException{
+        if (session == null) {
+            return null;
+        }
+        if (id == null) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+
+
+        Project project = (Project) Utility.findObjectFromLong(session, id,"Project");
+        if (project == null) {
+            SessionUtility.endSession(session);
+            return null;
+        }else {
+            SessionUtility.endSession(session);
+            return project;
+        }
+    }
+
+    public static List<Project> findProjectsFromName(Session session, String attributeValue) {
+        if (session == null) {
+            return null;
+        }
+        if (attributeValue == null || attributeValue.isEmpty()) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+
+        List<Object> objectList =  Utility.findObjectFromString(session,"name", attributeValue, "Project");
+
+        if (objectList == null || objectList.isEmpty()) {
+            return null;
+        }
+
+        List<Project> projects = new ArrayList<>();
+
+        objectList.stream()
+                .forEach(e -> projects.add((Project) e));
+
+        projects.stream()
+                .sorted(Comparator.comparing(Project::getId));
+
+        SessionUtility.endSession(session);
+        return projects;
+    }
+
+    public static List<Project> findProjectsFromDate(Session session, String date) {
+        if (session == null) {
+            return null;
+        }
+        if (date ==  null || date.isEmpty()) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+
+        List<Object> objectList =  Utility.findObjectsFromDate(session, "endDate", date, "Project");
+
+
+        if (objectList == null || objectList.isEmpty()) {
+            return null;
+        }
+
+        List<Project> projects = new ArrayList<>();
+
+        objectList.stream()
+                .forEach(e -> projects.add((Project) e));
+
+        projects.stream()
+                .sorted(Comparator.comparing(Project::getId));
+
+
+        return projects;
+    }
+
+    public static List<Project> findProjectsFromReportingId(Session session, String attributeValue) {
+        if (session == null) {
+            return null;
+        }
+        if (attributeValue == null || attributeValue.isEmpty()) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+
+        List<Object> objectList =  Utility.findObjectFromString(session, "reportingId", attributeValue,"Project");
+
+        if (objectList == null || objectList.isEmpty()) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+
+        List<Project> projects = new ArrayList<>();
+
+        objectList.stream()
+                .forEach(e -> projects.add((Project) e));
+
+        projects.stream()
+                .sorted(Comparator.comparing(Project::getId));
+
+        SessionUtility.endSession(session);
+        return projects;
+    }
+
+    public static List<Project> findProjectFromCustomer(Session session, Long customerId) {
+        if (session == null) {
+            return null;
+        }
+        if (customerId == null || customerId.equals(0l)) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+
+        Customer customer = getCustomerById(session, customerId);
+        if (customer == null) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+
+        List<Object> objects = Utility.findObjectFromObject(session,"customer",customer,"Project");
+        if (objects == null || objects.isEmpty()) {
+            return null;
+        }
+        List<Project> projects = new ArrayList<>();
+
+        objects.stream()
+                .forEach(e -> projects.add((Project) e));
+
+        projects.stream()
+                .sorted(Comparator.comparing(Project::getId));
+
+        return projects;
+
     }
 
     private static Project createProject(Session session, String name, LocalDate date, String reportingId, Long customerId) {
