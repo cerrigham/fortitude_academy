@@ -100,6 +100,27 @@ public class ProjectMethod {
         }
     }
 
+    public static Project findProjectFromIdWithCriteria(Session session, Long id) throws NoSuchElementException {
+        if (session == null) {
+            return null;
+        }
+        if (id == null || id.equals(0l)) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+
+        Object o = Utility.findObjectFromLongWithCriteria(session,id, Project.class);
+        SessionUtility.endSession(session);
+
+        if(o == null) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+
+        Project project = (Project) o;
+        return project;
+    }
+
     public static List<Project> findProjectsFromName(Session session, String attributeValue) {
         if (session == null) {
             return null;
@@ -127,6 +148,33 @@ public class ProjectMethod {
         return projects;
     }
 
+    public static  List<Project> findProjectFromNameWithCriteria(Session session, String name) {
+        if (session == null) {
+            return null;
+        }
+        if (name == null || name.isEmpty()) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+
+        List<Object> objects = Utility.findObjectsFromStringWithCriteria(session, "name", name, Project.class);
+        if (objects == null) {
+            SessionUtility.endSession(session);
+            return  null;
+        }
+        List<Project> projects = new ArrayList<>();
+
+        objects.stream()
+                .forEach(e -> projects.add((Project) e));
+
+        projects.stream()
+                .sorted(Comparator.comparing(Project::getId));
+
+        SessionUtility.endSession(session);
+
+        return projects;
+    }
+
     public static List<Project> findProjectsFromDate(Session session, String date) {
         if (session == null) {
             return null;
@@ -151,6 +199,33 @@ public class ProjectMethod {
         projects.stream()
                 .sorted(Comparator.comparing(Project::getId));
 
+
+        return projects;
+    }
+
+    public  static List<Project> findProjectsFromDateWithCriteria(Session session, String date) {
+        if (session == null) {
+            return null;
+        }
+        if (date == null || date.isEmpty()) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+
+        List<Object> objects = Utility.findObjectFromDateWithCriteria(session, "endDate", date, Project.class);
+        if (objects == null) {
+            SessionUtility.endSession(session);
+            return  null;
+        }
+        List<Project> projects = new ArrayList<>();
+
+        objects.stream()
+                .forEach(e -> projects.add((Project) e));
+
+        projects.stream()
+                .sorted(Comparator.comparing(Project::getId));
+
+        SessionUtility.endSession(session);
 
         return projects;
     }
@@ -183,6 +258,35 @@ public class ProjectMethod {
         return projects;
     }
 
+    public static List<Project> findProjectsFromreportingIdWithCriteria(Session session, String reportingId) {
+        if (session == null) {
+            return null;
+        }
+        if (reportingId == null || reportingId.isEmpty()) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+
+        List<Object> objects = Utility.findObjectsFromStringWithCriteria(session, "reportingId",
+                reportingId, Project.class);
+
+        if (objects == null) {
+            SessionUtility.endSession(session);
+            return  null;
+        }
+        List<Project> projects = new ArrayList<>();
+
+        objects.stream()
+                .forEach(e -> projects.add((Project) e));
+
+        projects.stream()
+                .sorted(Comparator.comparing(Project::getId));
+
+        SessionUtility.endSession(session);
+
+        return projects;
+    }
+
     public static List<Project> findProjectFromCustomer(Session session, Long customerId) {
         if (session == null) {
             return null;
@@ -212,6 +316,40 @@ public class ProjectMethod {
 
         return projects;
 
+    }
+
+    public static List<Project> findProjectsFromCustomerWithCriteria(Session session, Long customerId) {
+        if (session == null) {
+            return null;
+        }
+        if (customerId == null || customerId.equals(0l)) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+        Customer customer = getCustomerById(session, customerId);
+        if (customer == null) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+        List<Object> objects = Utility.findObjectFromObjectWithCriteria(session, "customer", customer,
+                Project.class);
+
+        if (objects == null || objects.isEmpty()) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+
+        SessionUtility.endSession(session);
+
+        List<Project> projects = new ArrayList<>();
+
+        objects.stream()
+                .forEach(e -> projects.add((Project) e));
+
+        projects.stream()
+                .sorted(Comparator.comparing(Project::getId));
+
+        return projects;
     }
 
     private static Project createProject(Session session, String name, LocalDate date, String reportingId, Long customerId) {

@@ -72,7 +72,7 @@ public class JobDescriptionMethod {
         }
     }
 
-    public static JobDescription findJobDescriptionFromId(Session session, Long id) throws NoSuchElementException{
+    public static JobDescription findJobDescriptionFromId(Session session, Long id) throws NoSuchElementException {
         if (session == null) {
             return null;
         }
@@ -91,24 +91,24 @@ public class JobDescriptionMethod {
         }
     }
 
-    private static JobDescription createJobDescription(Session session, Long technologyId, Long projectID) {
-
-        Technology technology = getTechnologyById(session, technologyId);
-        if (technology == null) {
+    public static JobDescription findJobDescriptionFromIdWithCriteria(Session session, Long id) throws NoSuchElementException {
+        if (session == null) {
+            return null;
+        }
+        if (id == null || id.equals(0l)) {
             SessionUtility.endSession(session);
             return null;
         }
 
-        Project project = getProjectById(session, projectID);
-        if (project == null) {
+        Object o = Utility.findObjectFromLongWithCriteria(session,id, JobDescription.class);
+        SessionUtility.endSession(session);
+
+        if(o == null) {
             SessionUtility.endSession(session);
             return null;
         }
 
-        JobDescription jobDescription = new JobDescription();
-        jobDescription.setTechnology(technology);
-        jobDescription.setProject(project);
-
+        JobDescription jobDescription = (JobDescription) o;
         return jobDescription;
     }
 
@@ -144,6 +144,39 @@ public class JobDescriptionMethod {
 
     }
 
+    public static List<JobDescription> findJobdescriptionFromTechnologyWithCriteria(Session session, Long technologyId) {
+        if (session == null) {
+            return null;
+        }
+        if (technologyId == null || technologyId.equals(0l)) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+        Technology technology = getTechnologyById(session, technologyId);
+        if (technology == null) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+        List<Object> objects = Utility.findObjectFromObjectWithCriteria(session, "technology", technology,
+                JobDescription.class);
+
+        if (objects == null || objects.isEmpty()) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+
+        SessionUtility.endSession(session);
+
+        List<JobDescription> jobDescriptions = new ArrayList<>();
+
+        objects.stream()
+                .forEach(e -> jobDescriptions.add((JobDescription) e));
+
+        jobDescriptions.stream()
+                .sorted(Comparator.comparing(JobDescription::getId));
+
+        return jobDescriptions;
+    }
     public static List<JobDescription> findJobDescriptionFromProject(Session session, Long projectId) {
         if (session == null) {
             return null;
@@ -176,6 +209,60 @@ public class JobDescriptionMethod {
 
     }
 
+    public static List<JobDescription> findJobDescriptionsFromProjectWithCriteria(Session session, Long projectId) {
+        if (session == null) {
+            return null;
+        }
+        if (projectId == null || projectId.equals(0l)) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+        Project project = getProjectById(session, projectId);
+        if (project == null) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+        List<Object> objects = Utility.findObjectFromObjectWithCriteria(session, "project", project,
+                JobDescription.class);
+
+        if (objects == null || objects.isEmpty()) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+
+        SessionUtility.endSession(session);
+
+        List<JobDescription> jobDescriptions = new ArrayList<>();
+
+        objects.stream()
+                .forEach(e -> jobDescriptions.add((JobDescription) e));
+
+        jobDescriptions.stream()
+                .sorted(Comparator.comparing(JobDescription::getId));
+
+        return jobDescriptions;
+    }
+
+    private static JobDescription createJobDescription(Session session, Long technologyId, Long projectID) {
+
+        Technology technology = getTechnologyById(session, technologyId);
+        if (technology == null) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+
+        Project project = getProjectById(session, projectID);
+        if (project == null) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+
+        JobDescription jobDescription = new JobDescription();
+        jobDescription.setTechnology(technology);
+        jobDescription.setProject(project);
+
+        return jobDescription;
+    }
     private static JobDescription getJobDescriptionById(Session session, Long id) {
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<JobDescription> cq = cb.createQuery(JobDescription.class);

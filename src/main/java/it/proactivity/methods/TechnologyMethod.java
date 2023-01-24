@@ -1,5 +1,6 @@
 package it.proactivity.methods;
 
+import it.proactivity.model.Project;
 import it.proactivity.model.Technology;
 import it.proactivity.utility.SessionUtility;
 import it.proactivity.utility.Utility;
@@ -87,6 +88,27 @@ public class TechnologyMethod {
         }
     }
 
+    public static Technology findTechnologyFromIdWithCriteria(Session session, Long id) throws NoSuchElementException {
+        if (session == null) {
+            return null;
+        }
+        if (id == null || id.equals(0l)) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+
+        Object o = Utility.findObjectFromLongWithCriteria(session,id, Technology.class);
+        SessionUtility.endSession(session);
+
+        if(o == null) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+
+        Technology technology = (Technology) o;
+        return technology;
+    }
+
     public static List<Technology> findTechnologiesFromName(Session session, String attributeValue) {
         if (session == null) {
             return null;
@@ -113,6 +135,33 @@ public class TechnologyMethod {
 
         SessionUtility.endSession(session);
         return technologies;
+    }
+
+    public static List<Technology> findTechnologyFromNameWithCriteria(Session session, String name) {
+        if (session == null) {
+            return null;
+        }
+        if (name == null || name.isEmpty()) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+
+        List<Object> objects = Utility.findObjectsFromStringWithCriteria(session, "name", name, Technology.class);
+        if (objects == null) {
+            SessionUtility.endSession(session);
+            return  null;
+        }
+        List<Technology> customers = new ArrayList<>();
+
+        objects.stream()
+                .forEach(e -> customers.add((Technology) e));
+
+        customers.stream()
+                .sorted(Comparator.comparing(Technology::getId));
+
+        SessionUtility.endSession(session);
+
+        return customers;
     }
 
     private static Technology createTechnology(String name) {

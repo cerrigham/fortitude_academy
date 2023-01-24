@@ -88,6 +88,27 @@ public class CustomerMethod {
         }
     }
 
+    public static Customer findCustomerFromIdWithCriteria(Session session, Long id) {
+        if (session == null) {
+            return null;
+        }
+        if (id == null || id.equals(0l)) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+
+        Object o = Utility.findObjectFromLongWithCriteria(session,id, Customer.class);
+        SessionUtility.endSession(session);
+
+        if(o == null) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+
+        Customer customer = (Customer) o;
+        return customer;
+    }
+
     public static List<Customer> findCustomersFromName(Session session, String attributeValue) {
         if (session == null) {
             return null;
@@ -113,6 +134,33 @@ public class CustomerMethod {
                 .sorted(Comparator.comparing(Customer::getId));
 
         SessionUtility.endSession(session);
+        return customers;
+    }
+
+    public static  List<Customer> findCustomerFromNameWithCriteria(Session session, String name) {
+        if (session == null) {
+            return null;
+        }
+        if (name == null || name.isEmpty()) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+
+        List<Object> objects = Utility.findObjectsFromStringWithCriteria(session, "name", name, Customer.class);
+        if (objects == null) {
+            SessionUtility.endSession(session);
+            return  null;
+        }
+        List<Customer> customers = new ArrayList<>();
+
+        objects.stream()
+                .forEach(e -> customers.add((Customer) e));
+
+        customers.stream()
+                .sorted(Comparator.comparing(Customer::getId));
+
+        SessionUtility.endSession(session);
+
         return customers;
     }
 
@@ -145,6 +193,33 @@ public class CustomerMethod {
         return customers;
     }
 
+    public static List<Customer> findCustomerFromEmailWithCriteria(Session session, String email) {
+        if (session == null) {
+            return null;
+        }
+        if (email == null || email.isEmpty()) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+
+        List<Object> objects = Utility.findObjectsFromStringWithCriteria(session, "email", email, Customer.class);
+        if (objects == null) {
+            SessionUtility.endSession(session);
+            return  null;
+        }
+        List<Customer> customers = new ArrayList<>();
+
+        objects.stream()
+                .forEach(e -> customers.add((Customer) e));
+
+        customers.stream()
+                .sorted(Comparator.comparing(Customer::getId));
+
+        SessionUtility.endSession(session);
+
+        return customers;
+    }
+
     public static List<Customer> findCustomersFromPhoneNumber(Session session, String attributeValue) {
         if (session == null) {
             return null;
@@ -174,6 +249,35 @@ public class CustomerMethod {
         return customers;
     }
 
+    public static List<Customer> findCustomersFromPhoneNumberWithCriteria(Session session, String phoneNumber) {
+        if (session == null) {
+            return null;
+        }
+        if (phoneNumber == null || phoneNumber.isEmpty()) {
+            SessionUtility.endSession(session);
+            return null;
+        }
+
+        List<Object> objects = Utility.findObjectsFromStringWithCriteria(session, "phoneNumber",
+                phoneNumber, Customer.class);
+
+        if (objects == null) {
+            SessionUtility.endSession(session);
+            return  null;
+        }
+        List<Customer> customers = new ArrayList<>();
+
+        objects.stream()
+                .forEach(e -> customers.add((Customer) e));
+
+        customers.stream()
+                .sorted(Comparator.comparing(Customer::getId));
+
+        SessionUtility.endSession(session);
+
+        return customers;
+    }
+
     public static List<Customer> findCustomersFromDetails(Session session, String attributeValue) {
         if (session == null) {
             return null;
@@ -196,6 +300,32 @@ public class CustomerMethod {
                 .sorted(Comparator.comparing(Customer::getId));
 
         SessionUtility.endSession(session);
+        return customers;
+    }
+
+    public static List<Customer> findCustomersFromDetailWithCriteria(Session session, String detail) {
+        if (session == null) {
+            return null;
+        }
+
+
+        List<Object> objects = Utility.findObjectsFromStringWithCriteria(session, "detail",
+                detail, Customer.class);
+
+        if (objects == null) {
+            SessionUtility.endSession(session);
+            return  null;
+        }
+        List<Customer> customers = new ArrayList<>();
+
+        objects.stream()
+                .forEach(e -> customers.add((Customer) e));
+
+        customers.stream()
+                .sorted(Comparator.comparing(Customer::getId));
+
+        SessionUtility.endSession(session);
+
         return customers;
     }
 
